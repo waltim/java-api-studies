@@ -1,6 +1,5 @@
 package br.com.waltim.api.resources;
 
-import br.com.waltim.api.domain.Users;
 import br.com.waltim.api.domain.dto.UserDTO;
 import br.com.waltim.api.services.UserService;
 import org.modelmapper.ModelMapper;
