@@ -4,7 +4,6 @@ import br.com.waltim.api.domain.Users;
 import br.com.waltim.api.repositories.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
-import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
 
@@ -18,7 +17,7 @@ public class LocalConfig implements CommandLineRunner {
     private UserRepository repository;
 
     @Override
-    public void run(String... args) throws Exception {
+    public void run(String... args) {
         startDB();
     }
 
