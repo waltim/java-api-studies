@@ -12,7 +12,7 @@ public class ApiApplication {
 
         Users users = new Users(1L, "Walter", "waltim@foton.la", "1234");
 
-        System.out.println(users.toString());
+        System.out.println(users);
     }
 
 }
