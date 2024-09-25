@@ -108,10 +108,21 @@ class UserServiceImplTest {
     }
 
     @Test
-    void whenCreateThenReturnDataIntegrityViolationException() {
+    void whenCreateThenReturnDataIntegrityViolationExceptionByNewUserDuplicatedEmail() {
         when(repository.findByEmail(anyString())).thenReturn(userOptional);
         DataIntegrityViolationException exception = assertThrows(DataIntegrityViolationException.class, () -> {
             userOptional.get().setId(1L);
+            userDTO.setId(null);
+            service.create(userDTO);
+        });
+        assertEquals(EMAIL_JA_CADASTRO_NO_SISTEMA, exception.getMessage());
+    }
+
+    @Test
+    void whenCreateThenReturnDataIntegrityViolationExceptionByDistinctUserDuplicatedEmail() {
+        when(repository.findByEmail(anyString())).thenReturn(userOptional);
+        DataIntegrityViolationException exception = assertThrows(DataIntegrityViolationException.class, () -> {
+            userOptional.get().setId(2L);
             service.create(userDTO);
         });
         assertEquals(EMAIL_JA_CADASTRO_NO_SISTEMA, exception.getMessage());
@@ -160,7 +171,7 @@ class UserServiceImplTest {
 
     private void startUser() {
         user = new Users(ID, NAME, EMAIL, PASSWORD);
-        userDTO = new UserDTO(null, NAME, EMAIL, PASSWORD);
+        userDTO = new UserDTO(ID, NAME, EMAIL, PASSWORD);
         userOptional = Optional.of(new Users(ID, NAME, EMAIL, PASSWORD));
     }
 }
