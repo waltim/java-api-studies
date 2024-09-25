@@ -1,6 +1,5 @@
 package br.com.waltim.api;
 
-import br.com.waltim.api.domain.Users;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
