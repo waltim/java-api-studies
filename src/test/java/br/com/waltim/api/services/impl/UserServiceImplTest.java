@@ -18,7 +18,7 @@ import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.*;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 import static org.mockito.MockitoAnnotations.openMocks;
 
 @SpringBootTest
@@ -30,6 +30,7 @@ class UserServiceImplTest {
     public static final String PASSWORD = "123321";
     public static final String USUARIO_NAO_ENCONTRADO = "Usuário não encontrado";
     public static final int INDEX = 0;
+    public static final String EMAIL_JA_CADASTRO_NO_SISTEMA = "Email já cadastro no sistema.";
 
     @InjectMocks
     private UserServiceImpl service;
@@ -113,7 +114,7 @@ class UserServiceImplTest {
             userOptional.get().setId(1L);
             service.create(userDTO);
         });
-        assertEquals("Email já cadastro no sistema.", exception.getMessage());
+        assertEquals(EMAIL_JA_CADASTRO_NO_SISTEMA, exception.getMessage());
     }
 
     @Test
@@ -138,11 +139,25 @@ class UserServiceImplTest {
             service.update(userDTO);
         });
 
-        assertEquals("Email já cadastro no sistema.", exception.getMessage());
+        assertEquals(EMAIL_JA_CADASTRO_NO_SISTEMA, exception.getMessage());
     }
 
     @Test
-    void delete() {
+    void deleteWithSuccess() {
+        when(repository.findById(anyLong())).thenReturn(userOptional);
+        doNothing().when(repository).deleteById(anyLong());
+        service.delete(ID);
+        verify(repository, times(1)).deleteById(anyLong());
+    }
+
+    @Test
+    void deleteWithObjectNotFoundException() {
+        when(repository.findById(anyLong())).thenThrow(new ObjectNotFoundException("Usuário não encontrado"));
+        ObjectNotFoundException exception = assertThrows(ObjectNotFoundException.class, () -> {
+            service.delete(ID);
+        });
+        assertEquals("Usuário não encontrado",
+                exception.getMessage());
     }
 
     private void startUser() {
