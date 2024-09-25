@@ -9,11 +9,10 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.Mockito;
-import org.mockito.MockitoAnnotations;
 import org.modelmapper.ModelMapper;
 import org.springframework.boot.test.context.SpringBootTest;
 
+import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -29,7 +28,8 @@ class UserServiceImplTest {
     public static final String NAME = "UserTest";
     public static final String EMAIL = "teste@teste.com";
     public static final String PASSWORD = "123321";
-    public static final String USUÁRIO_NÃO_ENCONTRADO = "Usuário não encontrado";
+    public static final String USUARIO_NAO_ENCONTRADO = "Usuário não encontrado";
+    public static final int INDEX = 0;
 
     @InjectMocks
     private UserServiceImpl service;
@@ -50,7 +50,7 @@ class UserServiceImplTest {
     }
 
     @Test
-    void whenFindByIdThenReturnUserInstance() {
+    void whenFindByIdThenReturnAnUser() {
         when(repository.findById(anyLong())).thenReturn(userOptional);
         Users response = service.findById(ID);
 
@@ -65,18 +65,31 @@ class UserServiceImplTest {
 
     @Test
     void whenFindByIdThenReturnAnObjectNotFoundException() {
-        when(repository.findById(anyLong())).thenThrow(new ObjectNotFoundException(USUÁRIO_NÃO_ENCONTRADO));
+        when(repository.findById(anyLong())).thenThrow(new ObjectNotFoundException(USUARIO_NAO_ENCONTRADO));
 
         try {
             service.findById(ID);
         } catch (ObjectNotFoundException ex) {
             assertEquals(ObjectNotFoundException.class, ex.getClass());
-            assertEquals(USUÁRIO_NÃO_ENCONTRADO,ex.getMessage());
+            assertEquals(USUARIO_NAO_ENCONTRADO,ex.getMessage());
         }
     }
 
     @Test
-    void findAll() {
+    void whenFindAllThenReturnAnListOfUsers() {
+        when(repository.findAll()).thenReturn(List.of(user));
+
+        List<Users> response = service.findAll();
+
+        assertNotNull(response);
+        assertEquals(1, response.size());
+        assertEquals(Users.class, response.getFirst().getClass());
+
+        assertEquals(ID, response.getFirst().getId());
+        assertEquals(NAME, response.getFirst().getName());
+        assertEquals(EMAIL, response.getFirst().getEmail());
+        assertEquals(PASSWORD, response.getFirst().getPassword());
+
     }
 
     @Test
