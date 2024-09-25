@@ -153,9 +153,7 @@ class UserServiceImplTest {
     @Test
     void deleteWithObjectNotFoundException() {
         when(repository.findById(anyLong())).thenThrow(new ObjectNotFoundException("Usuário não encontrado"));
-        ObjectNotFoundException exception = assertThrows(ObjectNotFoundException.class, () -> {
-            service.delete(ID);
-        });
+        ObjectNotFoundException exception = assertThrows(ObjectNotFoundException.class, () -> service.delete(ID));
         assertEquals("Usuário não encontrado",
                 exception.getMessage());
     }
