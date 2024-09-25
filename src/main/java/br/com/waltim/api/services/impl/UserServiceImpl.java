@@ -53,7 +53,7 @@ public class UserServiceImpl implements UserService {
 
     private void findByEmail(UserDTO userDTO){
         Optional<Users> user = repository.findByEmail(userDTO.getEmail());
-        if (user.isPresent() && !user.get().getId().equals(userDTO.getId())) {
+        if (user.isPresent() && (userDTO.getId() == null || !user.get().getId().equals(userDTO.getId()))) {
             throw new DataIntegrityViolationException("Email já cadastro no sistema.");
         }
     }

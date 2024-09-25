@@ -16,8 +16,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import java.util.List;
 import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.openMocks;
@@ -110,13 +109,11 @@ class UserServiceImplTest {
     @Test
     void whenCreateThenReturnDataIntegrityViolationException() {
         when(repository.findByEmail(anyString())).thenReturn(userOptional);
-        try {
-            userOptional.get().setId(2L);
+        DataIntegrityViolationException exception = assertThrows(DataIntegrityViolationException.class, () -> {
+            userOptional.get().setId(1L);
             service.create(userDTO);
-        } catch (DataIntegrityViolationException ex) {
-            assertEquals(DataIntegrityViolationException.class, ex.getClass());
-            assertEquals("Email já cadastro no sistema.", ex.getMessage());
-        }
+        });
+        assertEquals("Email já cadastro no sistema.", exception.getMessage());
     }
 
     @Test
@@ -134,12 +131,23 @@ class UserServiceImplTest {
     }
 
     @Test
+    void whenUpdateThenReturnDataIntegrityViolationException() {
+        when(repository.findByEmail(anyString())).thenReturn(userOptional);
+        DataIntegrityViolationException exception = assertThrows(DataIntegrityViolationException.class, () -> {
+            userOptional.get().setId(2L);
+            service.update(userDTO);
+        });
+
+        assertEquals("Email já cadastro no sistema.", exception.getMessage());
+    }
+
+    @Test
     void delete() {
     }
 
     private void startUser() {
         user = new Users(ID, NAME, EMAIL, PASSWORD);
-        userDTO = new UserDTO(ID, NAME, EMAIL, PASSWORD);
+        userDTO = new UserDTO(null, NAME, EMAIL, PASSWORD);
         userOptional = Optional.of(new Users(ID, NAME, EMAIL, PASSWORD));
     }
 }
