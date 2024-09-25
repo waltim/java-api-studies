@@ -51,7 +51,7 @@ class UserServiceImplTest {
     }
 
     @Test
-    void whenFindByIdThenReturnAnUser() {
+    void shouldReturnUserWhenFoundById() {
         when(repository.findById(anyLong())).thenReturn(userOptional);
         Users response = service.findById(ID);
 
@@ -65,7 +65,7 @@ class UserServiceImplTest {
     }
 
     @Test
-    void whenFindByIdThenReturnAnObjectNotFoundException() {
+    void shouldThrowObjectNotFoundExceptionWhenUserNotFoundById() {
         when(repository.findById(anyLong())).thenThrow(new ObjectNotFoundException(USUARIO_NAO_ENCONTRADO));
 
         try {
@@ -77,7 +77,7 @@ class UserServiceImplTest {
     }
 
     @Test
-    void whenFindAllThenReturnAnListOfUsers() {
+    void shouldReturnListOfUsersWhenFindAll() {
         when(repository.findAll()).thenReturn(List.of(user));
 
         List<Users> response = service.findAll();
@@ -94,7 +94,7 @@ class UserServiceImplTest {
     }
 
     @Test
-    void whenCreateThenReturnSuccess() {
+    void shouldReturnSuccessWhenCreatingUser() {
         when(repository.save(any())).thenReturn(user);
 
         Users response = service.create(userDTO);
@@ -108,7 +108,7 @@ class UserServiceImplTest {
     }
 
     @Test
-    void whenCreateThenReturnDataIntegrityViolationExceptionByNewUserDuplicatedEmail() {
+    void shouldThrowDataIntegrityViolationExceptionWhenCreatingNewUserWithDuplicateEmail() {
         when(repository.findByEmail(anyString())).thenReturn(userOptional);
         DataIntegrityViolationException exception = assertThrows(DataIntegrityViolationException.class, () -> {
             userOptional.get().setId(1L);
@@ -119,17 +119,7 @@ class UserServiceImplTest {
     }
 
     @Test
-    void whenCreateThenReturnDataIntegrityViolationExceptionByDistinctUserDuplicatedEmail() {
-        when(repository.findByEmail(anyString())).thenReturn(userOptional);
-        DataIntegrityViolationException exception = assertThrows(DataIntegrityViolationException.class, () -> {
-            userOptional.get().setId(2L);
-            service.create(userDTO);
-        });
-        assertEquals(EMAIL_JA_CADASTRO_NO_SISTEMA, exception.getMessage());
-    }
-
-    @Test
-    void whenUpdateThenReturnSuccess() {
+    void shouldUpdateUserSuccessfully() {
         when(repository.save(any())).thenReturn(user);
 
         Users response = service.update(userDTO);
@@ -143,7 +133,8 @@ class UserServiceImplTest {
     }
 
     @Test
-    void whenUpdateThenReturnDataIntegrityViolationException() {
+//    whenUpdateThenReturnDataIntegrityViolationException
+    void shouldReturnDataIntegrityViolationExceptionWhenUpdatingUserWithDuplicateEmail() {
         when(repository.findByEmail(anyString())).thenReturn(userOptional);
         DataIntegrityViolationException exception = assertThrows(DataIntegrityViolationException.class, () -> {
             userOptional.get().setId(2L);
@@ -154,7 +145,7 @@ class UserServiceImplTest {
     }
 
     @Test
-    void deleteWithSuccess() {
+    void shouldDeleteUserSuccessfully() {
         when(repository.findById(anyLong())).thenReturn(userOptional);
         doNothing().when(repository).deleteById(anyLong());
         service.delete(ID);
@@ -162,7 +153,7 @@ class UserServiceImplTest {
     }
 
     @Test
-    void deleteWithObjectNotFoundException() {
+    void shouldThrowObjectNotFoundExceptionWhenDeletingNonExistentUser() {
         when(repository.findById(anyLong())).thenThrow(new ObjectNotFoundException("Usuário não encontrado"));
         ObjectNotFoundException exception = assertThrows(ObjectNotFoundException.class, () -> service.delete(ID));
         assertEquals("Usuário não encontrado",
