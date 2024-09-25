@@ -4,6 +4,7 @@ import br.com.waltim.api.domain.Users;
 import br.com.waltim.api.domain.dto.UserDTO;
 import br.com.waltim.api.repositories.UserRepository;
 
+import br.com.waltim.api.services.exceptions.DataIntegrityViolationException;
 import br.com.waltim.api.services.exceptions.ObjectNotFoundException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -17,7 +18,7 @@ import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.openMocks;
 
@@ -71,7 +72,7 @@ class UserServiceImplTest {
             service.findById(ID);
         } catch (ObjectNotFoundException ex) {
             assertEquals(ObjectNotFoundException.class, ex.getClass());
-            assertEquals(USUARIO_NAO_ENCONTRADO,ex.getMessage());
+            assertEquals(USUARIO_NAO_ENCONTRADO, ex.getMessage());
         }
     }
 
@@ -93,7 +94,29 @@ class UserServiceImplTest {
     }
 
     @Test
-    void create() {
+    void whenCreateThenReturnSuccess() {
+        when(repository.save(any())).thenReturn(user);
+
+        Users response = service.create(userDTO);
+
+        assertEquals(Users.class, response.getClass());
+        assertNotNull(response);
+        assertEquals(ID, response.getId());
+        assertEquals(NAME, response.getName());
+        assertEquals(EMAIL, response.getEmail());
+        assertEquals(PASSWORD, response.getPassword());
+    }
+
+    @Test
+    void whenCreateThenReturnDataIntegrityViolationException() {
+        when(repository.findByEmail(anyString())).thenReturn(userOptional);
+        try {
+            userOptional.get().setId(2L);
+            service.create(userDTO);
+        } catch (DataIntegrityViolationException ex) {
+            assertEquals(DataIntegrityViolationException.class, ex.getClass());
+            assertEquals("Email já cadastro no sistema.", ex.getMessage());
+        }
     }
 
     @Test
