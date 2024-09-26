@@ -1,0 +1,9 @@
+#versão .properties
+#spring.profiles.active=local
+#server.port=8081
+spring:
+  profiles:
+    active: local
+
+server:
+  port: 8081
