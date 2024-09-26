@@ -16,7 +16,7 @@ spring:
     password: root
     driver-class-name: com.mysql.cj.jdbc.Driver
   jpa:
-    database-platform: org.hibernate.dialect.MySQLDialect
+    open-in-view: false
     hibernate:
       ddl-auto: create-drop
     show-sql: false
