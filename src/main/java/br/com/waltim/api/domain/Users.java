@@ -1,5 +1,6 @@
 package br.com.waltim.api.domain;
 
+import br.com.waltim.api.domain.vo.Address;
 import jakarta.persistence.*;
 
 import java.io.Serializable;
@@ -11,10 +12,11 @@ public class Users implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
-    public Users(Long id, String name, String email, String password) {
+    public Users(Long id, String name, String email, Address address, String password) {
         this.id = id;
         this.name = name;
         this.email = email;
+        this.address = address;
         this.password = password;
     }
 
@@ -27,6 +29,10 @@ public class Users implements Serializable {
 
     @Column(unique = true)
     private String email;
+
+    @Embedded
+    private Address address;
+
     private String password;
 
     public Long getId() {
@@ -53,6 +59,14 @@ public class Users implements Serializable {
         this.email = email;
     }
 
+    public Address getAddress() {
+        return address;
+    }
+
+    public void setAddress(Address address) {
+        this.address = address;
+    }
+
     public String getPassword() {
         return password;
     }
@@ -66,11 +80,11 @@ public class Users implements Serializable {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Users users = (Users) o;
-        return Objects.equals(id, users.id) && Objects.equals(name, users.name) && Objects.equals(email, users.email) && Objects.equals(password, users.password);
+        return Objects.equals(id, users.id) && Objects.equals(name, users.name) && Objects.equals(email, users.email) && Objects.equals(address, users.address) && Objects.equals(password, users.password);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, name, email, password);
+        return Objects.hash(id, name, email, address, password);
     }
 }
