@@ -20,7 +20,8 @@ public class Users implements Serializable {
         this.password = password;
     }
 
-    public Users() {}
+    public Users() {
+    }
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
