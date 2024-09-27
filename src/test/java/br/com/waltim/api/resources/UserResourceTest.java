@@ -2,8 +2,8 @@ package br.com.waltim.api.resources;
 
 import br.com.waltim.api.domain.Users;
 import br.com.waltim.api.domain.dto.UserDTO;
+import br.com.waltim.api.domain.vo.Address;
 import br.com.waltim.api.services.impl.UserServiceImpl;
-import org.h2.engine.User;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
@@ -13,9 +13,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
-import java.net.URI;
 import java.util.List;
-import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
@@ -61,7 +59,8 @@ class UserResourceTest {
         assertEquals(ID, response.getBody().getId());
         assertEquals(NAME, response.getBody().getName());
         assertEquals(EMAIL, response.getBody().getEmail());
-        assertEquals(PASSWORD, response.getBody().getPassword());
+        // uso de JsonProperty.Access.WRITE_ONLY
+//        assertEquals(PASSWORD, response.getBody().getPassword());
     }
 
     @Test
@@ -78,7 +77,8 @@ class UserResourceTest {
         assertEquals(ID, response.getBody().getFirst().getId());
         assertEquals(NAME, response.getBody().getFirst().getName());
         assertEquals(EMAIL, response.getBody().getFirst().getEmail());
-        assertEquals(PASSWORD, response.getBody().getFirst().getPassword());
+        // uso de JsonProperty.Access.WRITE_ONLY
+//        assertEquals(PASSWORD, response.getBody().getFirst().getPassword());
     }
 
     @Test
@@ -107,7 +107,8 @@ class UserResourceTest {
         assertEquals(ID, response.getBody().getId());
         assertEquals(NAME, response.getBody().getName());
         assertEquals(EMAIL, response.getBody().getEmail());
-        assertEquals(PASSWORD, response.getBody().getPassword());
+        // uso de JsonProperty.Access.WRITE_ONLY
+//        assertEquals(PASSWORD, response.getBody().getPassword());
     }
 
     @Test
@@ -124,7 +125,8 @@ class UserResourceTest {
     }
 
     private void startUser() {
-        user = new Users(ID, NAME, EMAIL, PASSWORD);
-        userDTO = new UserDTO(ID, NAME, EMAIL, PASSWORD);
+        Address address = new Address("Main Street", "123", "Apt 4B", "Springfield", "IL", "USA");
+        user = new Users(ID, NAME, EMAIL, address, PASSWORD);
+        userDTO = new UserDTO(ID, NAME, EMAIL, address, PASSWORD);
     }
 }
