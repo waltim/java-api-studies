@@ -10,7 +10,7 @@ import java.util.Objects;
 @Entity
 public class Users implements Serializable {
 
-    private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 2L;
 
     public Users(Long id, String name, String email, Address address, String password) {
         this.id = id;
