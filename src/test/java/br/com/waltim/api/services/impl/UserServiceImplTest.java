@@ -5,6 +5,7 @@ import br.com.waltim.api.domain.dto.UserDTO;
 import br.com.waltim.api.domain.vo.Address;
 import br.com.waltim.api.repositories.UserRepository;
 
+import br.com.waltim.api.services.UserService;
 import br.com.waltim.api.services.exceptions.DataIntegrityViolationException;
 import br.com.waltim.api.services.exceptions.ObjectNotFoundException;
 import org.junit.jupiter.api.BeforeEach;
@@ -16,6 +17,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.*;
@@ -60,15 +62,17 @@ class UserServiceImplTest {
     @Test
     void shouldReturnUserWhenFoundById() {
         when(repository.findById(anyLong())).thenReturn(userOptional);
-        Users response = service.findById(ID);
+        when(mapper.map(user, UserDTO.class)).thenReturn(userDTO);
+
+        UserDTO response = service.findById(ID);
 
         assertNotNull(response);
 
-        assertEquals(Users.class, response.getClass());
-        assertEquals(ID, response.getId());
+        assertEquals(UserDTO.class, response.getClass());
+        assertEquals(ID, response.getKey());
         assertEquals(NAME, response.getName());
         assertEquals(EMAIL, response.getEmail());
-        assertEquals(PASSWORD, response.getPassword());
+        assertNotSame(PASSWORD, response.getPassword());
 
         assertEquals(STREET,response.getAddress().getStreet());
         assertEquals(NUMBER,response.getAddress().getNumber());
@@ -93,18 +97,20 @@ class UserServiceImplTest {
 
     @Test
     void shouldReturnListOfUsersWhenFindAll() {
-        when(repository.findAll()).thenReturn(List.of(user));
+        List<Users> users = List.of(user); // Cria uma lista com a entidade
+        when(repository.findAll()).thenReturn(users); // Mock do repositório para retornar a lista de entidades
+        when(mapper.map(user, UserDTO.class)).thenReturn(userDTO); // Mock do mapper para converter entidade em DTO
 
-        List<Users> response = service.findAll();
+        List<UserDTO> response = service.findAll();
 
         assertNotNull(response);
         assertEquals(1, response.size());
-        assertEquals(Users.class, response.getFirst().getClass());
+        assertEquals(UserDTO.class, response.getFirst().getClass());
 
-        assertEquals(ID, response.getFirst().getId());
+        assertEquals(ID, response.getFirst().getKey());
         assertEquals(NAME, response.getFirst().getName());
         assertEquals(EMAIL, response.getFirst().getEmail());
-        assertEquals(PASSWORD, response.getFirst().getPassword());
+        assertNotSame(PASSWORD, response.getFirst().getPassword());
 
         assertEquals(STREET,response.getFirst().getAddress().getStreet());
         assertEquals(NUMBER,response.getFirst().getAddress().getNumber());
@@ -117,24 +123,27 @@ class UserServiceImplTest {
 
     @Test
     void shouldReturnSuccessWhenCreatingUser() {
-        when(repository.save(any())).thenReturn(user);
+        when(mapper.map(userDTO, Users.class)).thenReturn(user); // Mock do mapeamento de DTO para Users
+        when(repository.save(any())).thenReturn(user); // Mock do repositório para salvar o usuário
+        when(mapper.map(user, UserDTO.class)).thenReturn(userDTO); // Mock do mapeamento de Users para DTO
 
-        Users response = service.create(userDTO);
+        // Act
+        UserDTO response = service.create(userDTO);
 
-        assertEquals(Users.class, response.getClass());
+        assertEquals(UserDTO.class, response.getClass());
         assertNotNull(response);
-        assertEquals(ID, response.getId());
+        assertEquals(ID, response.getKey());
         assertEquals(NAME, response.getName());
         assertEquals(EMAIL, response.getEmail());
-        assertEquals(PASSWORD, response.getPassword());
+        assertNotSame(PASSWORD, response.getPassword());
     }
 
     @Test
     void shouldThrowDataIntegrityViolationExceptionWhenCreatingNewUserWithDuplicateEmail() {
         when(repository.findByEmail(anyString())).thenReturn(userOptional);
         DataIntegrityViolationException exception = assertThrows(DataIntegrityViolationException.class, () -> {
-            userOptional.get().setId(1L);
-            userDTO.setId(null);
+            userOptional.get().setKey(1L);
+            userDTO.setKey(null);
             service.create(userDTO);
         });
         assertEquals(EMAIL_JA_CADASTRO_NO_SISTEMA, exception.getMessage());
@@ -143,15 +152,16 @@ class UserServiceImplTest {
     @Test
     void shouldUpdateUserSuccessfully() {
         when(repository.save(any())).thenReturn(user);
+        when(mapper.map(user, UserDTO.class)).thenReturn(userDTO);
 
-        Users response = service.update(userDTO);
+        UserDTO response = service.update(userDTO);
 
-        assertEquals(Users.class, response.getClass());
+        assertEquals(UserDTO.class, response.getClass());
         assertNotNull(response);
-        assertEquals(ID, response.getId());
+        assertEquals(ID, response.getKey());
         assertEquals(NAME, response.getName());
         assertEquals(EMAIL, response.getEmail());
-        assertEquals(PASSWORD, response.getPassword());
+        assertNotSame(PASSWORD, response.getPassword());
     }
 
     @Test
@@ -159,7 +169,7 @@ class UserServiceImplTest {
     void shouldReturnDataIntegrityViolationExceptionWhenUpdatingUserWithDuplicateEmail() {
         when(repository.findByEmail(anyString())).thenReturn(userOptional);
         DataIntegrityViolationException exception = assertThrows(DataIntegrityViolationException.class, () -> {
-            userOptional.get().setId(2L);
+            userOptional.get().setKey(2L);
             service.update(userDTO);
         });
 
@@ -169,6 +179,7 @@ class UserServiceImplTest {
     @Test
     void shouldDeleteUserSuccessfully() {
         when(repository.findById(anyLong())).thenReturn(userOptional);
+        when(mapper.map(user, UserDTO.class)).thenReturn(userDTO);
         doNothing().when(repository).deleteById(anyLong());
         service.delete(ID);
         verify(repository, times(1)).deleteById(anyLong());

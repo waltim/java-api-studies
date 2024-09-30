@@ -2,7 +2,6 @@ package br.com.waltim.api.resources;
 
 import br.com.waltim.api.domain.dto.UserDTO;
 import br.com.waltim.api.services.UserService;
-import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -18,20 +17,18 @@ public class UserResource {
 
     public static final String ID = "/{id}";
     public static final String APPLICATION_X_YAML = "application/x-yaml";
-    @Autowired
-    private ModelMapper mapper;
 
     @Autowired
     private UserService userService;
 
     @GetMapping(value = ID, produces = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE, APPLICATION_X_YAML})
     public ResponseEntity<UserDTO> findById(@PathVariable Long id) {
-        return ResponseEntity.ok().body(mapper.map(userService.findById(id), UserDTO.class));
+        return ResponseEntity.ok().body(userService.findById(id));
     }
 
     @GetMapping(produces = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE, APPLICATION_X_YAML})
     public ResponseEntity<List<UserDTO>> findAll() {
-        return ResponseEntity.ok().body(userService.findAll().stream().map(x -> mapper.map(x, UserDTO.class)).collect(Collectors.toList()));
+        return ResponseEntity.ok().body(userService.findAll());
     }
 
     @PostMapping(consumes = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE, APPLICATION_X_YAML},
@@ -45,8 +42,8 @@ public class UserResource {
     @PutMapping(value = ID, consumes = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE, APPLICATION_X_YAML},
             produces = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE, APPLICATION_X_YAML})
     public ResponseEntity<UserDTO> update(@PathVariable Long id, @RequestBody UserDTO userDTO) {
-        userDTO.setId(id);
-        return ResponseEntity.ok().body(mapper.map(userService.update(userDTO), UserDTO.class));
+        userDTO.setKey(id);
+        return ResponseEntity.ok().body(userService.update(userDTO));
     }
 
     @DeleteMapping(value = ID)

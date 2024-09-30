@@ -2,12 +2,17 @@ package br.com.waltim.api.domain.dto;
 
 import br.com.waltim.api.domain.vo.Address;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import org.springframework.hateoas.RepresentationModel;
 
+import java.io.Serializable;
 import java.util.Objects;
 
 
-public class UserDTO {
-    private Long id;
+public class UserDTO extends RepresentationModel<UserDTO> implements Serializable {
+
+    private static final long serialVersionUID = 1L;
+
+    private Long key;
     private String name;
     private String email;
     private Address address;
@@ -17,19 +22,19 @@ public class UserDTO {
 
     public UserDTO() {}
 
-    public UserDTO(Long id, String name, String email, Address address, String password) {
-        this.id = id;
+    public UserDTO(Long key, String name, String email, Address address, String password) {
+        this.key = key;
         this.name = name;
         this.email = email;
         this.address = address;
     }
 
-    public Long getId() {
-        return id;
+    public Long getKey() {
+        return key;
     }
 
-    public void setId(Long id) {
-        this.id = id;
+    public void setKey(Long key) {
+        this.key = key;
     }
 
     public String getName() {
@@ -68,12 +73,13 @@ public class UserDTO {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
+        if (!super.equals(o)) return false;
         UserDTO userDTO = (UserDTO) o;
-        return Objects.equals(id, userDTO.id) && Objects.equals(name, userDTO.name) && Objects.equals(email, userDTO.email) && Objects.equals(address, userDTO.address) && Objects.equals(password, userDTO.password);
+        return Objects.equals(key, userDTO.key) && Objects.equals(name, userDTO.name) && Objects.equals(email, userDTO.email) && Objects.equals(address, userDTO.address) && Objects.equals(password, userDTO.password);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, name, email, address, password);
+        return Objects.hash(super.hashCode(), key, name, email, address, password);
     }
 }
