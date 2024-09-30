@@ -55,13 +55,17 @@ public class UserServiceImpl implements UserService {
     @Override
     public UserDTO create(UserDTO userDTO) {
         findByEmail(userDTO);
-        return mapper.map(repository.save(mapper.map(userDTO, Users.class)), UserDTO.class);
+        UserDTO user = mapper.map(repository.save(mapper.map(userDTO, Users.class)), UserDTO.class);
+        user.add(linkTo(methodOn(UserResource.class).findById(userDTO.getKey())).withSelfRel());
+        return user;
     }
 
     @Override
     public UserDTO update(UserDTO userDTO) {
         findByEmail(userDTO);
-        return mapper.map(repository.save(mapper.map(userDTO, Users.class)), UserDTO.class);
+        UserDTO user = mapper.map(repository.save(mapper.map(userDTO, Users.class)), UserDTO.class);
+        user.add(linkTo(methodOn(UserResource.class).findById(userDTO.getKey())).withSelfRel());
+        return user;
     }
 
     @Override

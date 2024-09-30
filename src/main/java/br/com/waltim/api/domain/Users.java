@@ -26,6 +26,7 @@ public class Users extends RepresentationModel<Users> implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id") // Mapeando a coluna "id" do banco de dados
     private Long key;
     private String name;
 
