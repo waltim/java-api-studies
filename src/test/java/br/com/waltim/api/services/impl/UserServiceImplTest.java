@@ -153,6 +153,7 @@ class UserServiceImplTest {
     void shouldUpdateUserSuccessfully() {
         when(repository.save(any())).thenReturn(user);
         when(mapper.map(user, UserDTO.class)).thenReturn(userDTO);
+        when(repository.findById(anyLong())).thenReturn(userOptional);
 
         UserDTO response = service.update(userDTO);
 

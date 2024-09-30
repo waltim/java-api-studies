@@ -63,6 +63,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public UserDTO update(UserDTO userDTO) {
         findByEmail(userDTO);
+        findById(userDTO.getKey());
         UserDTO user = mapper.map(repository.save(mapper.map(userDTO, Users.class)), UserDTO.class);
         user.add(linkTo(methodOn(UserResource.class).findById(userDTO.getKey())).withSelfRel());
         return user;
