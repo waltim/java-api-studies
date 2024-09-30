@@ -30,7 +30,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public UserDTO findById(Long id) {
         Optional<Users> user = repository.findById(id);
-        UserDTO userDTO = mapper.map(user.orElseThrow(() -> new ObjectNotFoundException("Usuário não encontrado")),UserDTO.class);
+        UserDTO userDTO = mapper.map(user.orElseThrow(() -> new ObjectNotFoundException("Usuário não encontrado")), UserDTO.class);
         // Adicionando o link HATEOAS para o próprio recurso
         userDTO.add(linkTo(methodOn(UserResource.class).findById(id)).withSelfRel());
 
@@ -61,17 +61,15 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public void delete(Long id) {
-         findById(id);
-         repository.deleteById(id);
+        findById(id);
+        repository.deleteById(id);
     }
 
-    private void findByEmail(UserDTO userDTO){
+    private void findByEmail(UserDTO userDTO) {
         Optional<Users> user = repository.findByEmail(userDTO.getEmail());
         if (user.isPresent() && (userDTO.getKey() == null || !user.get().getKey().equals(userDTO.getKey()))) {
             throw new DataIntegrityViolationException("Email já cadastro no sistema.");
         }
     }
-
-
 
 }
