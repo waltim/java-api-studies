@@ -5,7 +5,6 @@ import br.com.waltim.api.domain.dto.UserDTO;
 import br.com.waltim.api.domain.vo.Address;
 import br.com.waltim.api.repositories.UserRepository;
 
-import br.com.waltim.api.services.UserService;
 import br.com.waltim.api.services.exceptions.DataIntegrityViolationException;
 import br.com.waltim.api.services.exceptions.ObjectNotFoundException;
 import org.junit.jupiter.api.BeforeEach;
@@ -17,7 +16,6 @@ import org.springframework.boot.test.context.SpringBootTest;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.*;
@@ -32,7 +30,6 @@ class UserServiceImplTest {
     public static final String EMAIL = "teste@teste.com";
     public static final String PASSWORD = "123321";
     public static final String USUARIO_NAO_ENCONTRADO = "Usuário não encontrado";
-    public static final int INDEX = 0;
     public static final String EMAIL_JA_CADASTRO_NO_SISTEMA = "Email já cadastro no sistema.";
     public static final String STREET = "Main Street";
     public static final String NUMBER = "123";
