@@ -9,10 +9,12 @@ import br.com.waltim.api.services.exceptions.DataIntegrityViolationException;
 import br.com.waltim.api.services.exceptions.ObjectNotFoundException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInstance;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.modelmapper.ModelMapper;
-import org.springframework.boot.test.context.SpringBootTest;
 
 import java.util.List;
 import java.util.Optional;
@@ -22,7 +24,8 @@ import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.*;
 import static org.mockito.MockitoAnnotations.openMocks;
 
-@SpringBootTest
+@TestInstance(TestInstance.Lifecycle.PER_CLASS)
+@ExtendWith(MockitoExtension.class)
 class UserServiceImplTest {
 
     public static final long ID = 1L;
@@ -64,6 +67,7 @@ class UserServiceImplTest {
         UserDTO response = service.findById(ID);
 
         assertNotNull(response);
+        assertNotNull(response.getLinks());
 
         assertEquals(UserDTO.class, response.getClass());
         assertEquals(ID, response.getKey());
@@ -163,7 +167,6 @@ class UserServiceImplTest {
     }
 
     @Test
-//    whenUpdateThenReturnDataIntegrityViolationException
     void shouldReturnDataIntegrityViolationExceptionWhenUpdatingUserWithDuplicateEmail() {
         when(repository.findByEmail(anyString())).thenReturn(userOptional);
         DataIntegrityViolationException exception = assertThrows(DataIntegrityViolationException.class, () -> {

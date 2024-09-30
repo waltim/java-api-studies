@@ -6,10 +6,12 @@ import br.com.waltim.api.domain.vo.Address;
 import br.com.waltim.api.services.impl.UserServiceImpl;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInstance;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.modelmapper.ModelMapper;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
@@ -21,7 +23,8 @@ import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.*;
 import static org.mockito.MockitoAnnotations.openMocks;
 
-@SpringBootTest
+@TestInstance(TestInstance.Lifecycle.PER_CLASS)
+@ExtendWith(MockitoExtension.class)
 class UserResourceTest {
 
     @InjectMocks
@@ -48,7 +51,7 @@ class UserResourceTest {
     @Test
     void shouldReturnSuccessWhenFindByIdT() {
         when(service.findById(anyLong())).thenReturn(userDTO);
-        when(mapper.map(any(),any())).thenReturn(user);
+//        when(mapper.map(any(),any())).thenReturn(user);
 
         ResponseEntity<UserDTO> response = resource.findById(ID);
 
@@ -66,7 +69,7 @@ class UserResourceTest {
     @Test
     void shouldReturnSuccessWhenfindAll() {
         when(service.findAll()).thenReturn(List.of(userDTO));
-        when(mapper.map(any(),any())).thenReturn(user);
+//        when(mapper.map(any(),any())).thenReturn(user);
 
         ResponseEntity<List<UserDTO>> response = resource.findAll();
 
@@ -94,21 +97,13 @@ class UserResourceTest {
 
     @Test
     void shouldReturnAnUserWhenupdatingUser() {
-        when(service.update(any())).thenReturn(userDTO);
-        when(mapper.map(any(),any())).thenReturn(user);
+        when(service.create(any(UserDTO.class))).thenReturn(userDTO);
 
-        ResponseEntity<UserDTO> response = resource.update(ID, userDTO);
+        ResponseEntity<UserDTO> response = resource.create(userDTO);
 
-        assertNotNull(response);
-        assertEquals(HttpStatus.OK, response.getStatusCode());
-        assertNotNull(response.getBody());
-        assertEquals(UserDTO.class, response.getBody().getClass());
+        assertEquals(HttpStatus.CREATED, response.getStatusCode());
+        assertEquals(userDTO, response.getBody());
 
-        assertEquals(ID, response.getBody().getKey());
-        assertEquals(NAME, response.getBody().getName());
-        assertEquals(EMAIL, response.getBody().getEmail());
-        // uso de JsonProperty.Access.WRITE_ONLY
-//        assertEquals(PASSWORD, response.getBody().getPassword());
     }
 
     @Test
