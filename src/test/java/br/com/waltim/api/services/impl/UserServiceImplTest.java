@@ -55,7 +55,6 @@ class UserServiceImplTest {
 
     @BeforeEach
     void setUp() {
-        openMocks(this);
         startUser();
     }
 
