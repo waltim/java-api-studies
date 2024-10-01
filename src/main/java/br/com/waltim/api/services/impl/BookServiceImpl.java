@@ -55,6 +55,7 @@ public class BookServiceImpl implements BookService {
 
     @Override
     public BookDTO create(BookDTO bookDTO) {
+        validateBookDTO(bookDTO);
         findByTitle(bookDTO.getTitle());
         return mapper.map(bookRepository.save(mapper.map(bookDTO, Books.class)),
                 BookDTO.class);
@@ -62,6 +63,7 @@ public class BookServiceImpl implements BookService {
 
     @Override
     public BookDTO update(BookDTO bookDTO) {
+        validateBookDTO(bookDTO);
         findById(bookDTO.getKey());
         return mapper.map(bookRepository.save(mapper.map(bookDTO, Books.class)),
                 BookDTO.class);
@@ -77,9 +79,24 @@ public class BookServiceImpl implements BookService {
         Optional<Books> book = bookRepository.findByTitle(title);
         if (book.isPresent()) {
             BookDTO bookDTO = mapper.map(book.get(), BookDTO.class);
-            if (bookDTO.getTitle() == null || !bookDTO.getTitle().equals(title)) {
+            if (bookDTO.getTitle().equals(book.get().getTitle())) {
                 throw new DataIntegrityViolationException("The book has been registred in the System.");
             }
+        }
+    }
+
+    private void validateBookDTO(BookDTO bookDTO) {
+        if (bookDTO.getTitle() == null || bookDTO.getTitle().trim().isEmpty()) {
+            throw new DataIntegrityViolationException("The title cannot be null or empty.");
+        }
+        if (bookDTO.getAuthor() == null || bookDTO.getAuthor().trim().isEmpty()) {
+            throw new DataIntegrityViolationException("The author name cannot be null or empty.");
+        }
+        if (bookDTO.getPrice() == null) {
+            throw new DataIntegrityViolationException("The price cannot be null or empty.");
+        }
+        if (bookDTO.getPublished() == null) {
+            throw new DataIntegrityViolationException("The launch date cannot be null or empty.");
         }
     }
 }
