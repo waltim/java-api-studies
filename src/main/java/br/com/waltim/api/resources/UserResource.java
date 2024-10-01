@@ -17,13 +17,13 @@ import java.net.URI;
 import java.util.List;
 
 @RestController
-@RequestMapping(value = "/user/v1")
+@RequestMapping(value = "/v1/users")
 @Tag(name = "Users", description = "Endpoints for users.")
 public class UserResource {
 
     public static final String ID = "/{id}";
     public static final String APPLICATION_X_YAML = "application/x-yaml";
-    public static final String USER_V1 = "/user/v1/";
+    public static final String USER_V1 = "/v1/user/";
 
     @Autowired
     private UserService userService;
