@@ -21,6 +21,6 @@ spring:
       ddl-auto: none
     show-sql: false
 spring-doc:
-  pathsToMatch: /user/v1/**
+  pathsToMatch: /v1/**
   swagger-ui:
     use-root-path: true
