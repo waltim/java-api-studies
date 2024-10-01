@@ -5,6 +5,7 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import org.springframework.hateoas.RepresentationModel;
 
+import java.io.Serial;
 import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.Objects;
@@ -12,6 +13,7 @@ import java.util.Objects;
 @Entity
 public class Books extends RepresentationModel<Books> implements Serializable {
 
+    @Serial
     private static final long serialVersionUID = 1L;
 
     @Id
