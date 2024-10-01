@@ -23,13 +23,12 @@ public class BookServiceImpl implements BookService {
 
     //Injeção de depêndencia de forma tradicional
     private final BookRepository bookRepository;
+    private final ModelMapper mapper;
 
-    public BookServiceImpl(BookRepository bookRepository) {
+    public BookServiceImpl(BookRepository bookRepository, ModelMapper mapper) {
         this.bookRepository = bookRepository;
+        this.mapper = mapper;
     }
-
-    @Autowired
-    private ModelMapper mapper;
 
     @Override
     public BookDTO findById(Long id) {
