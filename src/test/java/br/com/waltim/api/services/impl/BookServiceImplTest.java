@@ -22,7 +22,7 @@ import java.util.Optional;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.*;
-import static org.mockito.MockitoAnnotations.openMocks;
+
 
 @TestInstance(TestInstance.Lifecycle.PER_METHOD)
 @ExtendWith(MockitoExtension.class)
@@ -81,9 +81,7 @@ class BookServiceImplTest {
     @Test
     void shouldThrowExceptionWhenBookNotFound() {
         when(bookRepository.findById(anyLong())).thenReturn(Optional.empty());
-        ObjectNotFoundException exception = assertThrows(ObjectNotFoundException.class, () -> {
-            bookService.findById(KEY);
-        });
+        ObjectNotFoundException exception = assertThrows(ObjectNotFoundException.class, () -> bookService.findById(KEY));
 
         assertNotNull(exception);
         assertEquals(BOOK_NOT_FOUND, exception.getMessage());
@@ -136,9 +134,7 @@ class BookServiceImplTest {
         when(bookRepository.findByTitle(anyString())).thenReturn(Optional.of(book));
         when(modelMapper.map(book, BookDTO.class)).thenReturn(bookDTO);
 
-        DataIntegrityViolationException exception = assertThrows(DataIntegrityViolationException.class, () -> {
-            bookService.create(bookDTO);
-        });
+        DataIntegrityViolationException exception = assertThrows(DataIntegrityViolationException.class, () -> bookService.create(bookDTO));
 
         assertNotNull(exception);
         assertEquals(REGISTRED_IN_THE_SYSTEM, exception.getMessage());
@@ -148,9 +144,7 @@ class BookServiceImplTest {
     void shouldThrowDataIntegrityViolationExceptionWhenTitleIsNull() {
         bookDTO.setTitle(null); // Simulando título nulo
 
-        DataIntegrityViolationException exception = assertThrows(DataIntegrityViolationException.class, () -> {
-            bookService.create(bookDTO);
-        });
+        DataIntegrityViolationException exception = assertThrows(DataIntegrityViolationException.class, () -> bookService.create(bookDTO));
 
         assertNotNull(exception);
         assertEquals(TITLE_CANNOT_BE_NULL_OR_EMPTY, exception.getMessage());
@@ -160,9 +154,7 @@ class BookServiceImplTest {
     void shouldThrowDataIntegrityViolationExceptionWhenAuthorIsNull() {
         bookDTO.setAuthor(null); // Simulando autor nulo
 
-        DataIntegrityViolationException exception = assertThrows(DataIntegrityViolationException.class, () -> {
-            bookService.create(bookDTO);
-        });
+        DataIntegrityViolationException exception = assertThrows(DataIntegrityViolationException.class, () -> bookService.create(bookDTO));
 
         assertNotNull(exception);
         assertEquals(AUTHOR_NAME_CANNOT_BE_NULL_OR_EMPTY, exception.getMessage());
@@ -172,9 +164,7 @@ class BookServiceImplTest {
     void shouldThrowDataIntegrityViolationExceptionWhenPriceIsNull() {
         bookDTO.setPrice(null); // Simulando preço nulo
 
-        DataIntegrityViolationException exception = assertThrows(DataIntegrityViolationException.class, () -> {
-            bookService.create(bookDTO);
-        });
+        DataIntegrityViolationException exception = assertThrows(DataIntegrityViolationException.class, () -> bookService.create(bookDTO));
 
         assertNotNull(exception);
         assertEquals(PRICE_CANNOT_BE_NULL_OR_EMPTY, exception.getMessage());
@@ -184,9 +174,7 @@ class BookServiceImplTest {
     void shouldThrowDataIntegrityViolationExceptionWhenPublishedIsNull() {
         bookDTO.setPublished(null); // Simulando data de lançamento nula
 
-        DataIntegrityViolationException exception = assertThrows(DataIntegrityViolationException.class, () -> {
-            bookService.create(bookDTO);
-        });
+        DataIntegrityViolationException exception = assertThrows(DataIntegrityViolationException.class, () -> bookService.create(bookDTO));
 
         assertNotNull(exception);
         assertEquals(DATE_CANNOT_BE_NULL_OR_EMPTY, exception.getMessage());
@@ -196,9 +184,7 @@ class BookServiceImplTest {
     void shouldThrowDataIntegrityViolationExceptionWhenTitleIsEmpty() {
         bookDTO.setTitle(" "); // Simulando título vazio
 
-        DataIntegrityViolationException exception = assertThrows(DataIntegrityViolationException.class, () -> {
-            bookService.create(bookDTO);
-        });
+        DataIntegrityViolationException exception = assertThrows(DataIntegrityViolationException.class, () -> bookService.create(bookDTO));
 
         assertNotNull(exception);
         assertEquals(TITLE_CANNOT_BE_NULL_OR_EMPTY, exception.getMessage());
@@ -208,9 +194,7 @@ class BookServiceImplTest {
     void shouldThrowDataIntegrityViolationExceptionWhenAuthorIsEmpty() {
         bookDTO.setAuthor(" "); // Simulando autor vazio
 
-        DataIntegrityViolationException exception = assertThrows(DataIntegrityViolationException.class, () -> {
-            bookService.create(bookDTO);
-        });
+        DataIntegrityViolationException exception = assertThrows(DataIntegrityViolationException.class, () -> bookService.create(bookDTO));
 
         assertNotNull(exception);
         assertEquals(AUTHOR_NAME_CANNOT_BE_NULL_OR_EMPTY, exception.getMessage());
@@ -240,9 +224,7 @@ class BookServiceImplTest {
     @Test
     void shouldThrowExceptionBookNotFoundWhenUpdateABook() {
         when(bookRepository.findById(anyLong())).thenReturn(Optional.empty());
-        ObjectNotFoundException exception = assertThrows(ObjectNotFoundException.class, () -> {
-            bookService.update(bookDTO);
-        });
+        ObjectNotFoundException exception = assertThrows(ObjectNotFoundException.class, () -> bookService.update(bookDTO));
         assertNotNull(exception);
         assertEquals(BOOK_NOT_FOUND, exception.getMessage());
     }
@@ -251,9 +233,7 @@ class BookServiceImplTest {
     void shouldThrowDataIntegrityViolationExceptionWhenUpdatingWithNullTitle() {
         bookDTO.setTitle(null); // Simulando título nulo
 
-        DataIntegrityViolationException exception = assertThrows(DataIntegrityViolationException.class, () -> {
-            bookService.update(bookDTO);
-        });
+        DataIntegrityViolationException exception = assertThrows(DataIntegrityViolationException.class, () -> bookService.update(bookDTO));
 
         assertNotNull(exception);
         assertEquals(TITLE_CANNOT_BE_NULL_OR_EMPTY, exception.getMessage());
@@ -263,9 +243,7 @@ class BookServiceImplTest {
     void shouldThrowDataIntegrityViolationExceptionWhenUpdatingWithNullAuthor() {
         bookDTO.setAuthor(null); // Simulando autor nulo
 
-        DataIntegrityViolationException exception = assertThrows(DataIntegrityViolationException.class, () -> {
-            bookService.update(bookDTO);
-        });
+        DataIntegrityViolationException exception = assertThrows(DataIntegrityViolationException.class, () -> bookService.update(bookDTO));
 
         assertNotNull(exception);
         assertEquals(AUTHOR_NAME_CANNOT_BE_NULL_OR_EMPTY, exception.getMessage());
@@ -275,9 +253,7 @@ class BookServiceImplTest {
     void shouldThrowDataIntegrityViolationExceptionWhenUpdatingWithNullPrice() {
         bookDTO.setPrice(null); // Simulando preço nulo
 
-        DataIntegrityViolationException exception = assertThrows(DataIntegrityViolationException.class, () -> {
-            bookService.update(bookDTO);
-        });
+        DataIntegrityViolationException exception = assertThrows(DataIntegrityViolationException.class, () -> bookService.update(bookDTO));
 
         assertNotNull(exception);
         assertEquals(PRICE_CANNOT_BE_NULL_OR_EMPTY, exception.getMessage());
@@ -287,9 +263,7 @@ class BookServiceImplTest {
     void shouldThrowDataIntegrityViolationExceptionWhenUpdatingWithNullPublished() {
         bookDTO.setPublished(null); // Simulando data de lançamento nula
 
-        DataIntegrityViolationException exception = assertThrows(DataIntegrityViolationException.class, () -> {
-            bookService.update(bookDTO);
-        });
+        DataIntegrityViolationException exception = assertThrows(DataIntegrityViolationException.class, () -> bookService.update(bookDTO));
 
         assertNotNull(exception);
         assertEquals(DATE_CANNOT_BE_NULL_OR_EMPTY, exception.getMessage());
@@ -299,9 +273,7 @@ class BookServiceImplTest {
     void shouldThrowDataIntegrityViolationExceptionWhenUpdatingWithEmptyTitle() {
         bookDTO.setTitle(" "); // Simulando título vazio
 
-        DataIntegrityViolationException exception = assertThrows(DataIntegrityViolationException.class, () -> {
-            bookService.update(bookDTO);
-        });
+        DataIntegrityViolationException exception = assertThrows(DataIntegrityViolationException.class, () -> bookService.update(bookDTO));
 
         assertNotNull(exception);
         assertEquals(TITLE_CANNOT_BE_NULL_OR_EMPTY, exception.getMessage());
@@ -311,9 +283,7 @@ class BookServiceImplTest {
     void shouldThrowDataIntegrityViolationExceptionWhenUpdatingWithEmptyAuthor() {
         bookDTO.setAuthor(" "); // Simulando autor vazio
 
-        DataIntegrityViolationException exception = assertThrows(DataIntegrityViolationException.class, () -> {
-            bookService.update(bookDTO);
-        });
+        DataIntegrityViolationException exception = assertThrows(DataIntegrityViolationException.class, () -> bookService.update(bookDTO));
 
         assertNotNull(exception);
         assertEquals(AUTHOR_NAME_CANNOT_BE_NULL_OR_EMPTY, exception.getMessage());
@@ -333,9 +303,7 @@ class BookServiceImplTest {
     void shouldThrowObjectNotFoundWhenDeleteABook() {
         when(bookRepository.findById(anyLong())).thenReturn(Optional.empty());
 
-        ObjectNotFoundException exception = assertThrows(ObjectNotFoundException.class, () -> {
-            bookService.delete(bookDTO.getKey());
-        });
+        ObjectNotFoundException exception = assertThrows(ObjectNotFoundException.class, () -> bookService.delete(bookDTO.getKey()));
 
         assertNotNull(exception);
         assertEquals(BOOK_NOT_FOUND, exception.getMessage());
