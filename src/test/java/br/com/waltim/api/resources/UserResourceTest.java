@@ -47,8 +47,8 @@ class UserResourceTest {
 
     @Test
     void shouldReturnSuccessWhenFindByIdT() {
-        when(service.findById(anyLong())).thenReturn(user);
-        when(mapper.map(any(),any())).thenReturn(userDTO);
+        when(service.findById(anyLong())).thenReturn(userDTO);
+        when(mapper.map(any(),any())).thenReturn(user);
 
         ResponseEntity<UserDTO> response = resource.findById(ID);
 
@@ -56,7 +56,7 @@ class UserResourceTest {
         assertEquals(200, response.getStatusCodeValue());
         assertEquals(userDTO, response.getBody());
 
-        assertEquals(ID, response.getBody().getId());
+        assertEquals(ID, response.getBody().getKey());
         assertEquals(NAME, response.getBody().getName());
         assertEquals(EMAIL, response.getBody().getEmail());
         // uso de JsonProperty.Access.WRITE_ONLY
@@ -65,8 +65,8 @@ class UserResourceTest {
 
     @Test
     void shouldReturnSuccessWhenfindAll() {
-        when(service.findAll()).thenReturn(List.of(user));
-        when(mapper.map(any(),any())).thenReturn(userDTO);
+        when(service.findAll()).thenReturn(List.of(userDTO));
+        when(mapper.map(any(),any())).thenReturn(user);
 
         ResponseEntity<List<UserDTO>> response = resource.findAll();
 
@@ -74,7 +74,7 @@ class UserResourceTest {
         assertEquals(200, response.getStatusCodeValue());
         assertEquals(List.of(userDTO), response.getBody());
 
-        assertEquals(ID, response.getBody().getFirst().getId());
+        assertEquals(ID, response.getBody().getFirst().getKey());
         assertEquals(NAME, response.getBody().getFirst().getName());
         assertEquals(EMAIL, response.getBody().getFirst().getEmail());
         // uso de JsonProperty.Access.WRITE_ONLY
@@ -83,7 +83,7 @@ class UserResourceTest {
 
     @Test
     void shouldReturnSuccessWhenCreatingUser() {
-        when(service.create(any())).thenReturn(user);
+        when(service.create(any())).thenReturn(userDTO);
 
         ResponseEntity<UserDTO> response = resource.create(userDTO);
 
@@ -94,8 +94,8 @@ class UserResourceTest {
 
     @Test
     void shouldReturnAnUserWhenupdatingUser() {
-        when(service.update(any())).thenReturn(user);
-        when(mapper.map(any(),any())).thenReturn(userDTO);
+        when(service.update(any())).thenReturn(userDTO);
+        when(mapper.map(any(),any())).thenReturn(user);
 
         ResponseEntity<UserDTO> response = resource.update(ID, userDTO);
 
@@ -104,7 +104,7 @@ class UserResourceTest {
         assertNotNull(response.getBody());
         assertEquals(UserDTO.class, response.getBody().getClass());
 
-        assertEquals(ID, response.getBody().getId());
+        assertEquals(ID, response.getBody().getKey());
         assertEquals(NAME, response.getBody().getName());
         assertEquals(EMAIL, response.getBody().getEmail());
         // uso de JsonProperty.Access.WRITE_ONLY

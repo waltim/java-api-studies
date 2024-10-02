@@ -2,18 +2,19 @@ package br.com.waltim.api.domain;
 
 import br.com.waltim.api.domain.vo.Address;
 import jakarta.persistence.*;
+import org.springframework.hateoas.RepresentationModel;
 
 import java.io.Serializable;
 import java.util.Objects;
 
 
 @Entity
-public class Users implements Serializable {
+public class Users extends RepresentationModel<Users> implements Serializable {
 
-    private static final long serialVersionUID = 2L;
+    private static final long serialVersionUID = 3L;
 
-    public Users(Long id, String name, String email, Address address, String password) {
-        this.id = id;
+    public Users(Long key, String name, String email, Address address, String password) {
+        this.key = key;
         this.name = name;
         this.email = email;
         this.address = address;
@@ -25,7 +26,7 @@ public class Users implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private Long key;
     private String name;
 
     @Column(unique = true)
@@ -36,12 +37,12 @@ public class Users implements Serializable {
 
     private String password;
 
-    public Long getId() {
-        return id;
+    public Long getKey() {
+        return key;
     }
 
-    public void setId(Long id) {
-        this.id = id;
+    public void setKey(Long key) {
+        this.key = key;
     }
 
     public String getName() {
@@ -80,12 +81,13 @@ public class Users implements Serializable {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
+        if (!super.equals(o)) return false;
         Users users = (Users) o;
-        return Objects.equals(id, users.id) && Objects.equals(name, users.name) && Objects.equals(email, users.email) && Objects.equals(address, users.address) && Objects.equals(password, users.password);
+        return Objects.equals(key, users.key) && Objects.equals(name, users.name) && Objects.equals(email, users.email) && Objects.equals(address, users.address) && Objects.equals(password, users.password);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, name, email, address, password);
+        return Objects.hash(super.hashCode(), key, name, email, address, password);
     }
 }
