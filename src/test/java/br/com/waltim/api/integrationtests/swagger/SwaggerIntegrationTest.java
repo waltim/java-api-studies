@@ -12,7 +12,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
 @ActiveProfiles("test")
-public class SwaggerInterationTest extends AbstractIntegrationTest {
+public class SwaggerIntegrationTest extends AbstractIntegrationTest {
 
     @Test
     public void shouldDisplaySwaggerUiPage() {
