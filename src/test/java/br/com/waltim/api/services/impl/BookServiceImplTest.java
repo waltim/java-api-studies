@@ -131,7 +131,7 @@ class BookServiceImplTest {
 
     @Test
     void shouldReturnThrowsDataIntegrityViolationExceptionWhenBookAlreadyExists() {
-        when(bookRepository.findByTitle(anyString())).thenReturn(Optional.of(book));
+        when(bookRepository.findByTitle(anyString())).thenReturn(optionalBook);
         when(modelMapper.map(book, BookDTO.class)).thenReturn(bookDTO);
 
         DataIntegrityViolationException exception = assertThrows(DataIntegrityViolationException.class, () -> bookService.create(bookDTO));
@@ -312,7 +312,7 @@ class BookServiceImplTest {
     private void startBooks() {
         book = new Books(KEY, TITLE, AUTHOR, PRICE, PUBLISHED);
         bookDTO = new BookDTO(KEY, TITLE, AUTHOR, PRICE, PUBLISHED);
-        optionalBook = Optional.of(book);
+        optionalBook = Optional.of(new Books(KEY, TITLE, AUTHOR, PRICE, PUBLISHED));
     }
 
 }

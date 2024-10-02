@@ -3,7 +3,6 @@ package br.com.waltim.api.resources;
 import br.com.waltim.api.domain.dto.BookDTO;
 import br.com.waltim.api.services.BookService;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -20,8 +19,12 @@ public class BookResource {
     public static final String APPLICATION_X_YAML = "application/x-yaml";
     public static final String BOOK_V1 = "/v1/book/";
 
-    @Autowired
-    private BookService bookService;
+
+    private final BookService bookService;
+
+    public BookResource(BookService bookService) {
+        this.bookService = bookService;
+    }
 
     @GetMapping(value = ID, produces = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE, APPLICATION_X_YAML})
     public ResponseEntity<BookDTO> findById(Long id) {
