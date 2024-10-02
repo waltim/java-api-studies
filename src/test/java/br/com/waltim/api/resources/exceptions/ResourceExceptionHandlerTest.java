@@ -4,6 +4,7 @@ import br.com.waltim.api.domain.vo.Address;
 import br.com.waltim.api.services.exceptions.DataIntegrityViolationException;
 import br.com.waltim.api.services.exceptions.HandleIllegalArgumentException;
 import br.com.waltim.api.services.exceptions.ObjectNotFoundException;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
@@ -11,7 +12,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.mock.web.MockHttpServletRequest;
-import org.springframework.mock.web.MockHttpServletResponse;
+
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.MockitoAnnotations.openMocks;
@@ -27,6 +28,8 @@ class ResourceExceptionHandlerTest {
         openMocks(this);
     }
 
+
+
     @Test
     void shouldReturnResponseEntityWhenObjectNotFound() {
         ResponseEntity<StandardError> responseEntity = exceptionHandler.objectNotFound(
@@ -41,7 +44,7 @@ class ResourceExceptionHandlerTest {
         assertEquals(ResponseEntity.class, responseEntity.getClass());
         assertEquals(StandardError.class, responseEntity.getBody().getClass());
         assertEquals("Usuário não encontrado",responseEntity.getBody().getError());
-        assertEquals(404,responseEntity.getStatusCodeValue());
+        assertEquals(404,responseEntity.getStatusCode().value());
     }
 
     @Test
@@ -57,8 +60,9 @@ class ResourceExceptionHandlerTest {
         assertEquals(ResponseEntity.class, responseEntity.getClass());
         assertEquals(StandardError.class, responseEntity.getBody().getClass());
         assertEquals("Email já cadastro no sistema.",responseEntity.getBody().getError());
-        assertEquals(400,responseEntity.getStatusCodeValue());
+        assertEquals(400,responseEntity.getStatusCode().value());
     }
+
 
     @Test
     void shouldReturnResponseEntityWhenHandleIllegalArgumentException(){
@@ -76,17 +80,12 @@ class ResourceExceptionHandlerTest {
 
     @Test
     void shouldThrowIllegalArgumentExceptionWhenStreetIsEmpty() {
-        assertThrows(HandleIllegalArgumentException.class, () -> {
-            new Address("", "123", "Apt 1", "City", "State", "Country");
-        });
+        assertThrows(HandleIllegalArgumentException.class, () -> new Address("", "123", "Apt 1", "City", "State", "Country"));
     }
 
     @Test
     void shouldThrowIllegalArgumentExceptionWithCorrectMessage() {
-        Exception exception = assertThrows(HandleIllegalArgumentException.class, () -> {
-            new Address(null, "123", "Apt 1", "City", "State", "Country");
-        });
-
+        Exception exception = assertThrows(HandleIllegalArgumentException.class, () -> new Address(null, "123", "Apt 1", "City", "State", "Country"));
         assertEquals("Street, city, state, and country cannot be null or empty", exception.getMessage());
     }
 }

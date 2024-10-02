@@ -32,6 +32,12 @@ class UserServiceImplTest {
     public static final String USUARIO_NAO_ENCONTRADO = "Usuário não encontrado";
     public static final int INDEX = 0;
     public static final String EMAIL_JA_CADASTRO_NO_SISTEMA = "Email já cadastro no sistema.";
+    public static final String STREET = "Main Street";
+    public static final String NUMBER = "123";
+    public static final String COMPLEMENT = "Apt 4B";
+    public static final String CITY = "Springfield";
+    public static final String STATE = "IL";
+    public static final String COUNTRY = "USA";
 
     @InjectMocks
     private UserServiceImpl service;
@@ -63,6 +69,14 @@ class UserServiceImplTest {
         assertEquals(NAME, response.getName());
         assertEquals(EMAIL, response.getEmail());
         assertEquals(PASSWORD, response.getPassword());
+
+        assertEquals(STREET,response.getAddress().getStreet());
+        assertEquals(NUMBER,response.getAddress().getNumber());
+        assertEquals(COMPLEMENT,response.getAddress().getComplement());
+        assertEquals(CITY,response.getAddress().getCity());
+        assertEquals(STATE,response.getAddress().getState());
+        assertEquals(COUNTRY,response.getAddress().getCountry());
+
     }
 
     @Test
@@ -91,6 +105,13 @@ class UserServiceImplTest {
         assertEquals(NAME, response.getFirst().getName());
         assertEquals(EMAIL, response.getFirst().getEmail());
         assertEquals(PASSWORD, response.getFirst().getPassword());
+
+        assertEquals(STREET,response.getFirst().getAddress().getStreet());
+        assertEquals(NUMBER,response.getFirst().getAddress().getNumber());
+        assertEquals(COMPLEMENT,response.getFirst().getAddress().getComplement());
+        assertEquals(CITY,response.getFirst().getAddress().getCity());
+        assertEquals(STATE,response.getFirst().getAddress().getState());
+        assertEquals(COUNTRY,response.getFirst().getAddress().getCountry());
 
     }
 
@@ -162,7 +183,7 @@ class UserServiceImplTest {
     }
 
     private void startUser() {
-        Address address = new Address("Main Street", "123", "Apt 4B", "Springfield", "IL", "USA");
+        Address address = new Address(STREET, NUMBER, COMPLEMENT, CITY, STATE, COUNTRY);
         user = new Users(ID, NAME, EMAIL, address, PASSWORD);
         userDTO = new UserDTO(ID, NAME, EMAIL, address, PASSWORD);
         userOptional = Optional.of(new Users(ID, NAME, EMAIL, address, PASSWORD));
