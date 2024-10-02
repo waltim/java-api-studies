@@ -43,20 +43,30 @@ public class UserServiceImpl implements UserService {
     @Override
     public List<UserDTO> findAll() {
         return repository.findAll().stream()
-                .map(u -> mapper.map(u, UserDTO.class))
+                .map(u -> {
+                    UserDTO userDTO = mapper.map(u, UserDTO.class);
+                    // Adicionando o link HATEOAS para o próprio recurso
+                    userDTO.add(linkTo(methodOn(UserResource.class).findById(userDTO.getKey())).withSelfRel());
+                    return userDTO;
+                })
                 .collect(Collectors.toList());
     }
 
     @Override
     public UserDTO create(UserDTO userDTO) {
         findByEmail(userDTO);
-        return mapper.map(repository.save(mapper.map(userDTO, Users.class)), UserDTO.class);
+        UserDTO user = mapper.map(repository.save(mapper.map(userDTO, Users.class)), UserDTO.class);
+        user.add(linkTo(methodOn(UserResource.class).findById(userDTO.getKey())).withSelfRel());
+        return user;
     }
 
     @Override
     public UserDTO update(UserDTO userDTO) {
         findByEmail(userDTO);
-        return mapper.map(repository.save(mapper.map(userDTO, Users.class)), UserDTO.class);
+        findById(userDTO.getKey());
+        UserDTO user = mapper.map(repository.save(mapper.map(userDTO, Users.class)), UserDTO.class);
+        user.add(linkTo(methodOn(UserResource.class).findById(userDTO.getKey())).withSelfRel());
+        return user;
     }
 
     @Override

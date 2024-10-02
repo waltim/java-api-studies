@@ -1,9 +1,12 @@
 package br.com.waltim.api.resources.exceptions;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+
 import java.time.LocalDateTime;
 
 
 public class StandardError {
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
     private final LocalDateTime timestamp;
     private final Integer status;
     private final String error;

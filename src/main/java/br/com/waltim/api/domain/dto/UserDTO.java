@@ -2,16 +2,18 @@ package br.com.waltim.api.domain.dto;
 
 import br.com.waltim.api.domain.vo.Address;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import org.springframework.hateoas.RepresentationModel;
 
 import java.io.Serializable;
 import java.util.Objects;
 
-
+@JsonPropertyOrder({"id","name","email","address","password"})
 public class UserDTO extends RepresentationModel<UserDTO> implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
+    @JsonProperty("id")
     private Long key;
     private String name;
     private String email;

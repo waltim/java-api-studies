@@ -1,6 +1,5 @@
 package br.com.waltim.api.services;
 
-import br.com.waltim.api.domain.Users;
 import br.com.waltim.api.domain.dto.UserDTO;
 
 import java.util.List;

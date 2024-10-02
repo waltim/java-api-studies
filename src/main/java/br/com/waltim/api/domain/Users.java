@@ -13,19 +13,9 @@ public class Users extends RepresentationModel<Users> implements Serializable {
 
     private static final long serialVersionUID = 3L;
 
-    public Users(Long key, String name, String email, Address address, String password) {
-        this.key = key;
-        this.name = name;
-        this.email = email;
-        this.address = address;
-        this.password = password;
-    }
-
-    public Users() {
-    }
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id") // Mapeando a coluna "id" do banco de dados
     private Long key;
     private String name;
 
@@ -36,6 +26,17 @@ public class Users extends RepresentationModel<Users> implements Serializable {
     private Address address;
 
     private String password;
+
+    public Users(Long key, String name, String email, Address address, String password) {
+        this.key = key;
+        this.name = name;
+        this.email = email;
+        this.address = address;
+        this.password = password;
+    }
+
+    public Users() {
+    }
 
     public Long getKey() {
         return key;

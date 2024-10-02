@@ -5,26 +5,27 @@ import br.com.waltim.api.domain.dto.UserDTO;
 import br.com.waltim.api.domain.vo.Address;
 import br.com.waltim.api.repositories.UserRepository;
 
-import br.com.waltim.api.services.UserService;
 import br.com.waltim.api.services.exceptions.DataIntegrityViolationException;
 import br.com.waltim.api.services.exceptions.ObjectNotFoundException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInstance;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.modelmapper.ModelMapper;
-import org.springframework.boot.test.context.SpringBootTest;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.*;
 import static org.mockito.MockitoAnnotations.openMocks;
 
-@SpringBootTest
+@TestInstance(TestInstance.Lifecycle.PER_CLASS)
+@ExtendWith(MockitoExtension.class)
 class UserServiceImplTest {
 
     public static final long ID = 1L;
@@ -32,7 +33,6 @@ class UserServiceImplTest {
     public static final String EMAIL = "teste@teste.com";
     public static final String PASSWORD = "123321";
     public static final String USUARIO_NAO_ENCONTRADO = "Usuário não encontrado";
-    public static final int INDEX = 0;
     public static final String EMAIL_JA_CADASTRO_NO_SISTEMA = "Email já cadastro no sistema.";
     public static final String STREET = "Main Street";
     public static final String NUMBER = "123";
@@ -67,6 +67,7 @@ class UserServiceImplTest {
         UserDTO response = service.findById(ID);
 
         assertNotNull(response);
+        assertNotNull(response.getLinks());
 
         assertEquals(UserDTO.class, response.getClass());
         assertEquals(ID, response.getKey());
@@ -153,6 +154,7 @@ class UserServiceImplTest {
     void shouldUpdateUserSuccessfully() {
         when(repository.save(any())).thenReturn(user);
         when(mapper.map(user, UserDTO.class)).thenReturn(userDTO);
+        when(repository.findById(anyLong())).thenReturn(userOptional);
 
         UserDTO response = service.update(userDTO);
 
@@ -165,7 +167,6 @@ class UserServiceImplTest {
     }
 
     @Test
-//    whenUpdateThenReturnDataIntegrityViolationException
     void shouldReturnDataIntegrityViolationExceptionWhenUpdatingUserWithDuplicateEmail() {
         when(repository.findByEmail(anyString())).thenReturn(userOptional);
         DataIntegrityViolationException exception = assertThrows(DataIntegrityViolationException.class, () -> {
