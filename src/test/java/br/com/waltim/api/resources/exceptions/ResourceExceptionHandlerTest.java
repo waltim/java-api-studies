@@ -1,6 +1,8 @@
 package br.com.waltim.api.resources.exceptions;
 
+import br.com.waltim.api.domain.vo.Address;
 import br.com.waltim.api.services.exceptions.DataIntegrityViolationException;
+import br.com.waltim.api.services.exceptions.HandleIllegalArgumentException;
 import br.com.waltim.api.services.exceptions.ObjectNotFoundException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -56,5 +58,35 @@ class ResourceExceptionHandlerTest {
         assertEquals(StandardError.class, responseEntity.getBody().getClass());
         assertEquals("Email já cadastro no sistema.",responseEntity.getBody().getError());
         assertEquals(400,responseEntity.getStatusCodeValue());
+    }
+
+    @Test
+    void shouldReturnResponseEntityWhenHandleIllegalArgumentException(){
+        ResponseEntity<StandardError> responseEntity = exceptionHandler.handleIllegalArgumentException(
+                new HandleIllegalArgumentException("Street, city, state, and country cannot be null or empty"),
+                new MockHttpServletRequest()
+        );
+
+        assertNotNull(responseEntity);
+        assertNotNull(responseEntity.getBody());
+        assertEquals(HttpStatus.BAD_REQUEST, responseEntity.getStatusCode());
+        assertEquals(ResponseEntity.class, responseEntity.getClass());
+        assertEquals(StandardError.class, responseEntity.getBody().getClass());
+    }
+
+    @Test
+    void shouldThrowIllegalArgumentExceptionWhenStreetIsEmpty() {
+        assertThrows(HandleIllegalArgumentException.class, () -> {
+            new Address("", "123", "Apt 1", "City", "State", "Country");
+        });
+    }
+
+    @Test
+    void shouldThrowIllegalArgumentExceptionWithCorrectMessage() {
+        Exception exception = assertThrows(HandleIllegalArgumentException.class, () -> {
+            new Address(null, "123", "Apt 1", "City", "State", "Country");
+        });
+
+        assertEquals("Street, city, state, and country cannot be null or empty", exception.getMessage());
     }
 }

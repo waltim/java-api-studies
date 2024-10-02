@@ -2,6 +2,7 @@ package br.com.waltim.api.services.impl;
 
 import br.com.waltim.api.domain.Users;
 import br.com.waltim.api.domain.dto.UserDTO;
+import br.com.waltim.api.domain.vo.Address;
 import br.com.waltim.api.repositories.UserRepository;
 
 import br.com.waltim.api.services.exceptions.DataIntegrityViolationException;
@@ -161,8 +162,9 @@ class UserServiceImplTest {
     }
 
     private void startUser() {
-        user = new Users(ID, NAME, EMAIL, PASSWORD);
-        userDTO = new UserDTO(ID, NAME, EMAIL, PASSWORD);
-        userOptional = Optional.of(new Users(ID, NAME, EMAIL, PASSWORD));
+        Address address = new Address("Main Street", "123", "Apt 4B", "Springfield", "IL", "USA");
+        user = new Users(ID, NAME, EMAIL, address, PASSWORD);
+        userDTO = new UserDTO(ID, NAME, EMAIL, address, PASSWORD);
+        userOptional = Optional.of(new Users(ID, NAME, EMAIL, address, PASSWORD));
     }
 }

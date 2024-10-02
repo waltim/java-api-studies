@@ -1,6 +1,7 @@
 package br.com.waltim.api.resources.exceptions;
 
 import br.com.waltim.api.services.exceptions.DataIntegrityViolationException;
+import br.com.waltim.api.services.exceptions.HandleIllegalArgumentException;
 import br.com.waltim.api.services.exceptions.ObjectNotFoundException;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.http.HttpStatus;
@@ -21,6 +22,12 @@ public class ResourceExceptionHandler {
 
     @ExceptionHandler(DataIntegrityViolationException.class)
     public ResponseEntity<StandardError>dataIntegrityViolationException(DataIntegrityViolationException ex, HttpServletRequest request) {
+        StandardError error = new StandardError(LocalDateTime.now(), HttpStatus.BAD_REQUEST.value(), ex.getMessage(), request.getRequestURI());
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(error);
+    }
+
+    @ExceptionHandler(HandleIllegalArgumentException.class)
+    public ResponseEntity<StandardError> handleIllegalArgumentException(HandleIllegalArgumentException ex, HttpServletRequest request) {
         StandardError error = new StandardError(LocalDateTime.now(), HttpStatus.BAD_REQUEST.value(), ex.getMessage(), request.getRequestURI());
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(error);
     }
