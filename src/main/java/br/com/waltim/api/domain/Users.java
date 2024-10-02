@@ -4,6 +4,7 @@ import br.com.waltim.api.domain.vo.Address;
 import jakarta.persistence.*;
 import org.springframework.hateoas.RepresentationModel;
 
+import java.io.Serial;
 import java.io.Serializable;
 import java.util.Objects;
 
@@ -11,6 +12,7 @@ import java.util.Objects;
 @Entity
 public class Users extends RepresentationModel<Users> implements Serializable {
 
+    @Serial
     private static final long serialVersionUID = 3L;
 
     @Id
