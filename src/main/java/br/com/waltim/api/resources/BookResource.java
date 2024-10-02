@@ -27,7 +27,7 @@ public class BookResource {
     }
 
     @GetMapping(value = ID, produces = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE, APPLICATION_X_YAML})
-    public ResponseEntity<BookDTO> findById(Long id) {
+    public ResponseEntity<BookDTO> findById(@PathVariable Long id) {
         return ResponseEntity.ok().body(bookService.findById(id));
     }
 
