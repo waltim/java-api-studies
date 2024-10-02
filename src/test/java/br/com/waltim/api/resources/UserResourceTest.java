@@ -4,6 +4,8 @@ import br.com.waltim.api.domain.dto.UserDTO;
 import br.com.waltim.api.domain.vo.Address;
 import br.com.waltim.api.services.UserService;
 
+import br.com.waltim.api.services.exceptions.DataIntegrityViolationException;
+import br.com.waltim.api.services.exceptions.ObjectNotFoundException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
@@ -14,6 +16,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 
@@ -38,13 +41,16 @@ class UserResourceTest {
     public static final String EMAIL = "teste@teste.com";
     public static final String PASSWORD = "123321";
 
+    public static final String USUARIO_NAO_ENCONTRADO = "Usuário não encontrado";
+    public static final String EMAIL_JA_CADASTRO_NO_SISTEMA = "Email já cadastro no sistema.";
+
     @BeforeEach
     void setUp() {
         startUser();
     }
 
     @Test
-    void shouldReturnSuccessWhenFindByIdT() {
+    void shouldReturnSuccessWhenFindById() {
         when(service.findById(anyLong())).thenReturn(userDTO);
 
         ResponseEntity<UserDTO> response = resource.findById(ID);
@@ -58,6 +64,16 @@ class UserResourceTest {
         assertEquals(EMAIL, response.getBody().getEmail());
         // uso de JsonProperty.Access.WRITE_ONLY
 //        assertEquals(PASSWORD, response.getBody().getPassword());
+    }
+
+    @Test
+    void shouldReturnObjectNotFoundExceptionWhenFindById() {
+        when(service.findById(anyLong())).thenThrow(new ObjectNotFoundException(USUARIO_NAO_ENCONTRADO));
+
+        ObjectNotFoundException exception = assertThrows(ObjectNotFoundException.class, () -> resource.findById(ID));
+
+        assertNotNull(exception);
+        assertEquals(USUARIO_NAO_ENCONTRADO, exception.getMessage());
     }
 
     @Test
@@ -76,14 +92,12 @@ class UserResourceTest {
     }
 
     @Test
-    void shouldReturnSuccessWhenCreatingUser() {
-        when(service.create(any())).thenReturn(userDTO);
+    void shouldReturnObjectNotFoundExceptionWhenCreatingUser() {
+        when(service.create(any())).thenThrow(new ObjectNotFoundException(USUARIO_NAO_ENCONTRADO));
 
-        ResponseEntity<UserDTO> response = resource.create(userDTO);
-
-        assertNotNull(response);
-        assertEquals(HttpStatus.CREATED, response.getStatusCode());
-        assertNotNull(response.getHeaders().getLocation());
+        ObjectNotFoundException exception = assertThrows(ObjectNotFoundException.class, () -> resource.create(userDTO));
+        assertNotNull(exception);
+        assertEquals(USUARIO_NAO_ENCONTRADO, exception.getMessage());
     }
 
     @Test
@@ -95,6 +109,25 @@ class UserResourceTest {
         assertEquals(HttpStatus.CREATED, response.getStatusCode());
         assertEquals(userDTO, response.getBody());
 
+    }
+
+    @Test
+    void shouldReturnObjectNotFoundExceptionWhenUpdatingUser() {
+        when(service.update(any())).thenThrow(new ObjectNotFoundException(USUARIO_NAO_ENCONTRADO));
+
+        ObjectNotFoundException exception =  assertThrows(ObjectNotFoundException.class, () -> resource.update(ID,userDTO));
+        assertNotNull(exception);
+        assertEquals(USUARIO_NAO_ENCONTRADO, exception.getMessage());
+
+    }
+
+    @Test
+    void shouldReturnDataIntegrityViolationExceptionWhenUpdatingUser(){
+        when(service.update(any())).thenThrow(new DataIntegrityViolationException(EMAIL_JA_CADASTRO_NO_SISTEMA));
+
+        DataIntegrityViolationException exception =  assertThrows(DataIntegrityViolationException.class, () -> resource.update(ID,userDTO));
+        assertNotNull(exception);
+        assertEquals(EMAIL_JA_CADASTRO_NO_SISTEMA, exception.getMessage());
     }
 
     @Test
@@ -110,8 +143,17 @@ class UserResourceTest {
         verify(service, times(1)).delete(anyLong());
     }
 
+    @Test
+    void shouldReturnObjectNotFoundExceptionWhenDeletingUser(){
+        doThrow(new ObjectNotFoundException(USUARIO_NAO_ENCONTRADO)).when(service).delete(anyLong());
+        ObjectNotFoundException exception = assertThrows(ObjectNotFoundException.class, () -> resource.delete(ID));
+        assertNotNull(exception);
+        assertEquals(USUARIO_NAO_ENCONTRADO, exception.getMessage());
+    }
+
     private void startUser() {
         Address address = new Address("Main Street", "123", "Apt 4B", "Springfield", "IL", "USA");
         userDTO = new UserDTO(ID, NAME, EMAIL, address, PASSWORD);
+        userDTO.add(Collections.emptyList());
     }
 }
