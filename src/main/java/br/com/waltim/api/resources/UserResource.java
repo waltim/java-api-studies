@@ -28,6 +28,7 @@ public class UserResource {
     @Autowired
     private UserService userService;
 
+//    @CrossOrigin(origins = "http://localhost:8081")
     @GetMapping(value = ID, produces = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE, APPLICATION_X_YAML})
     @Operation(summary = "Finds a User", description = "Finds a User",
             tags = {"Users"},
@@ -67,6 +68,7 @@ public class UserResource {
         return ResponseEntity.ok().body(userService.findAll());
     }
 
+//    @CrossOrigin(origins = {"http://localhost:8081","https://waltim:8081"})
     @PostMapping(consumes = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE, APPLICATION_X_YAML},
             produces = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE, APPLICATION_X_YAML})
     @Operation(summary = "Adds a new User",
