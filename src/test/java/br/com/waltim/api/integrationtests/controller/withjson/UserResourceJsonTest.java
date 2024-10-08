@@ -75,15 +75,15 @@ public class UserResourceJsonTest extends AbstractIntegrationTest {
 
         assertTrue(createdUser.getKey() > 0);
 
-        assertTrue(createdUser.getName().equals("Waltim"));
-        assertTrue(createdUser.getEmail().equals("<EMAIL>"));
+        assertEquals("Waltim", createdUser.getName());
+        assertEquals("<EMAIL>", createdUser.getEmail());
 //        assertTrue(createdUser.getPassword().equals("<PASSWORD>"));
-        assertTrue(createdUser.getAddress().getStreet().equals("Main Street"));
-        assertTrue(createdUser.getAddress().getNumber().equals("123"));
-        assertTrue(createdUser.getAddress().getComplement().equals("Apt 4B"));
-        assertTrue(createdUser.getAddress().getCity().equals("Springfield"));
-        assertTrue(createdUser.getAddress().getState().equals("IL"));
-        assertTrue(createdUser.getAddress().getCountry().equals("USA"));
+        assertEquals("Main Street", createdUser.getAddress().getStreet());
+        assertEquals("123", createdUser.getAddress().getNumber());
+        assertEquals("Apt 4B", createdUser.getAddress().getComplement());
+        assertEquals("Springfield", createdUser.getAddress().getCity());
+        assertEquals("IL", createdUser.getAddress().getState());
+        assertEquals("USA", createdUser.getAddress().getCountry());
     }
 
 
@@ -153,15 +153,15 @@ public class UserResourceJsonTest extends AbstractIntegrationTest {
 
         assertTrue(persistedUser.getKey() > 0);
 
-        assertTrue(persistedUser.getName().equals("Waltim"));
-        assertTrue(persistedUser.getEmail().equals("<EMAIL>"));
+        assertEquals("Waltim", persistedUser.getName());
+        assertEquals("<EMAIL>", persistedUser.getEmail());
 //        assertTrue(createdUser.getPassword().equals("<PASSWORD>"));
-        assertTrue(persistedUser.getAddress().getStreet().equals("Main Street"));
-        assertTrue(persistedUser.getAddress().getNumber().equals("123"));
-        assertTrue(persistedUser.getAddress().getComplement().equals("Apt 4B"));
-        assertTrue(persistedUser.getAddress().getCity().equals("Springfield"));
-        assertTrue(persistedUser.getAddress().getState().equals("IL"));
-        assertTrue(persistedUser.getAddress().getCountry().equals("USA"));
+        assertEquals("Main Street", persistedUser.getAddress().getStreet());
+        assertEquals("123", persistedUser.getAddress().getNumber());
+        assertEquals("Apt 4B", persistedUser.getAddress().getComplement());
+        assertEquals("Springfield", persistedUser.getAddress().getCity());
+        assertEquals("IL", persistedUser.getAddress().getState());
+        assertEquals("USA", persistedUser.getAddress().getCountry());
     }
 
     @Test
