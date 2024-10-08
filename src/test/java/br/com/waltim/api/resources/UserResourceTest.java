@@ -1,5 +1,6 @@
 package br.com.waltim.api.resources;
 
+import br.com.waltim.api.domain.Permission;
 import br.com.waltim.api.domain.dto.UserDTO;
 import br.com.waltim.api.domain.vo.Address;
 import br.com.waltim.api.services.UserService;
@@ -16,6 +17,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
@@ -40,6 +42,13 @@ class UserResourceTest {
     public static final String NAME = "UserTest";
     public static final String EMAIL = "teste@teste.com";
     public static final String PASSWORD = "123321";
+
+    public static final String USER_NAME = NAME;
+    public static final String FULL_NAME = "User Tester da Silva";
+    public static final Boolean ACCOUNT_NON_EXPIRED = true;
+    public static final Boolean ACCOUNT_NON_LOCKED = true;
+    public static final Boolean CREDENTIALS_NON_EXPIRED = true;
+    public static final Boolean ENABLED = true;
 
     public static final String USUARIO_NAO_ENCONTRADO = "Usuário não encontrado";
     public static final String EMAIL_JA_CADASTRO_NO_SISTEMA = "Email já cadastro no sistema.";
@@ -152,8 +161,24 @@ class UserResourceTest {
     }
 
     private void startUser() {
+
+        // Creating a list of permissions for the user
+        Permission readPermission = new Permission();
+        readPermission.setDescription("READ_PRIVILEGE");
+
+        Permission writePermission = new Permission();
+        writePermission.setDescription("WRITE_PRIVILEGE");
+
+        Permission adminPermission = new Permission();
+        adminPermission.setDescription("ADMIN_PRIVILEGE");
+
+        List<Permission> userPermissions = new ArrayList<>();
+        userPermissions.add(readPermission);
+        userPermissions.add(writePermission);
+        userPermissions.add(adminPermission);
+
         Address address = new Address("Main Street", "123", "Apt 4B", "Springfield", "IL", "USA");
-        userDTO = new UserDTO(ID, NAME, EMAIL, address, PASSWORD);
+        userDTO = new UserDTO(ID, USER_NAME, FULL_NAME, EMAIL, ACCOUNT_NON_EXPIRED, ACCOUNT_NON_LOCKED, CREDENTIALS_NON_EXPIRED, ENABLED, NAME, address, PASSWORD, userPermissions);
         userDTO.add(Collections.emptyList());
     }
 }

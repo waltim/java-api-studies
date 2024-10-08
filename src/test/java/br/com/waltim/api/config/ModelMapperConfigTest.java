@@ -1,7 +1,8 @@
 package br.com.waltim.api.config;
 
 import br.com.waltim.api.domain.Books;
-import br.com.waltim.api.domain.Users;
+import br.com.waltim.api.domain.Permission;
+import br.com.waltim.api.domain.User;
 import br.com.waltim.api.domain.dto.BookDTO;
 import br.com.waltim.api.domain.dto.UserDTO;
 import br.com.waltim.api.domain.vo.Address;
@@ -12,6 +13,7 @@ import org.junit.jupiter.api.TestInstance;
 import org.modelmapper.ModelMapper;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -67,12 +69,23 @@ class ModelMapperConfigTest {
 
     @Test
     public void shouldMapUsersToUserDTO() {
-        Users user = new Users();
+        User user = new User();
         user.setKey(1L);
         user.setName("Craig Walls");
         user.setEmail("walls@test.com");
         user.setAddress(new Address("Street 1", "123", "next to the school", "Brasília", "DF", "Brasil"));
         user.setPassword("password");
+
+        Permission permission = new Permission();
+        permission.setDescription("ADMIN");
+
+        user.setUserName("walli");
+        user.setAccountNonExpired(true);
+        user.setAccountNonLocked(true);
+        user.setCredentialsNonExpired(true);
+        user.setEnabled(true);
+        user.setFullName("walli");
+        user.setPermissions(List.of(permission));
 
         UserDTO userDTO = modelMapper.map(user, UserDTO.class);
 
@@ -82,6 +95,13 @@ class ModelMapperConfigTest {
         assertEquals(user.getEmail(), userDTO.getEmail());
         assertEquals(user.getAddress(), userDTO.getAddress());
         assertEquals(user.getPassword(), userDTO.getPassword());
+        assertEquals(user.getUserName(), userDTO.getUserName());
+        assertEquals(user.getAccountNonExpired(), userDTO.getAccountNonExpired());
+        assertEquals(user.getAccountNonLocked(), userDTO.getAccountNonLocked());
+        assertEquals(user.getCredentialsNonExpired(), userDTO.getCredentialsNonExpired());
+        assertEquals(user.getEnabled(), userDTO.getEnabled());
+        assertEquals(user.getFullName(), userDTO.getFullName());
+        assertEquals(user.getPermissions(), userDTO.getPermissions());
     }
 
     @Test
@@ -93,7 +113,18 @@ class ModelMapperConfigTest {
         userDTO.setAddress(new Address("Street 1", "123", "next to the school", "Brasília", "DF", "Brasil"));
         userDTO.setPassword("password");
 
-        Users user = modelMapper.map(userDTO, Users.class);
+        Permission permission = new Permission();
+        permission.setDescription("ADMIN");
+
+        userDTO.setUserName("walli");
+        userDTO.setAccountNonExpired(true);
+        userDTO.setAccountNonLocked(true);
+        userDTO.setCredentialsNonExpired(true);
+        userDTO.setEnabled(true);
+        userDTO.setFullName("walli");
+        userDTO.setPermissions(List.of(permission));
+
+        User user = modelMapper.map(userDTO, User.class);
 
         assertNotNull(user);
         assertEquals(user.getKey(), userDTO.getKey());
@@ -101,5 +132,13 @@ class ModelMapperConfigTest {
         assertEquals(user.getEmail(), userDTO.getEmail());
         assertEquals(user.getAddress(), userDTO.getAddress());
         assertEquals(user.getPassword(), userDTO.getPassword());
+        assertEquals(user.getUserName(), userDTO.getUserName());
+        assertEquals(user.getAccountNonExpired(), userDTO.getAccountNonExpired());
+        assertEquals(user.getAccountNonLocked(), userDTO.getAccountNonLocked());
+        assertEquals(user.getCredentialsNonExpired(), userDTO.getCredentialsNonExpired());
+        assertEquals(user.getEnabled(), userDTO.getEnabled());
+        assertEquals(user.getFullName(), userDTO.getFullName());
+        assertEquals(user.getPermissions(), userDTO.getPermissions());
+
     }
 }

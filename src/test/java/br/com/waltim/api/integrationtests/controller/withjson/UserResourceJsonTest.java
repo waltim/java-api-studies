@@ -1,6 +1,7 @@
 package br.com.waltim.api.integrationtests.controller.withjson;
 
 import br.com.waltim.api.config.TestConfigs;
+import br.com.waltim.api.domain.Permission;
 import br.com.waltim.api.domain.dto.UserDTO;
 import br.com.waltim.api.domain.vo.Address;
 import br.com.waltim.api.integrationtests.testcontainers.AbstractIntegrationTest;
@@ -16,6 +17,7 @@ import org.testcontainers.shaded.com.fasterxml.jackson.databind.DeserializationF
 import org.testcontainers.shaded.com.fasterxml.jackson.databind.ObjectMapper;
 
 import java.io.IOException;
+import java.util.List;
 
 import static io.restassured.RestAssured.given;
 import static org.junit.jupiter.api.Assertions.*;
@@ -199,5 +201,16 @@ public class UserResourceJsonTest extends AbstractIntegrationTest {
         user.setEmail("<EMAIL>");
         user.setPassword("<PASSWORD>");
         user.setAddress(new Address("Main Street", "123", "Apt 4B", "Springfield", "IL", "USA"));
+
+        Permission permission = new Permission();
+        permission.setDescription("ADMIN");
+
+        user.setUserName("walli");
+        user.setAccountNonExpired(true);
+        user.setAccountNonLocked(true);
+        user.setCredentialsNonExpired(true);
+        user.setEnabled(true);
+        user.setFullName("Waltim");
+        user.setPermissions(List.of(permission));
     }
 }

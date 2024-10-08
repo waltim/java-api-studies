@@ -1,6 +1,6 @@
 package br.com.waltim.api.services.impl;
 
-import br.com.waltim.api.domain.Users;
+import br.com.waltim.api.domain.User;
 import br.com.waltim.api.domain.dto.UserDTO;
 import br.com.waltim.api.repositories.UserRepository;
 import br.com.waltim.api.resources.UserResource;
@@ -9,6 +9,9 @@ import br.com.waltim.api.services.exceptions.DataIntegrityViolationException;
 import br.com.waltim.api.services.exceptions.ObjectNotFoundException;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -19,7 +22,7 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
 @Service
-public class UserServiceImpl implements UserService {
+public class UserServiceImpl implements UserService, UserDetailsService {
 
     @Autowired
     private UserRepository repository;
@@ -29,7 +32,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserDTO findById(Long id) {
-        Optional<Users> user = repository.findById(id);
+        Optional<User> user = repository.findById(id);
         UserDTO userDTO = mapper.map(user.orElseThrow(() -> new ObjectNotFoundException("Usuário não encontrado")), UserDTO.class);
         // Adicionando o link HATEOAS para o próprio recurso
         userDTO.add(linkTo(methodOn(UserResource.class).findById(id)).withSelfRel());
@@ -55,7 +58,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public UserDTO create(UserDTO userDTO) {
         findByEmail(userDTO);
-        UserDTO user = mapper.map(repository.save(mapper.map(userDTO, Users.class)), UserDTO.class);
+        UserDTO user = mapper.map(repository.save(mapper.map(userDTO, User.class)), UserDTO.class);
         user.add(linkTo(methodOn(UserResource.class).findById(userDTO.getKey())).withSelfRel());
         return user;
     }
@@ -64,7 +67,7 @@ public class UserServiceImpl implements UserService {
     public UserDTO update(UserDTO userDTO) {
         findByEmail(userDTO);
         findById(userDTO.getKey());
-        UserDTO user = mapper.map(repository.save(mapper.map(userDTO, Users.class)), UserDTO.class);
+        UserDTO user = mapper.map(repository.save(mapper.map(userDTO, User.class)), UserDTO.class);
         user.add(linkTo(methodOn(UserResource.class).findById(userDTO.getKey())).withSelfRel());
         return user;
     }
@@ -76,10 +79,20 @@ public class UserServiceImpl implements UserService {
     }
 
     private void findByEmail(UserDTO userDTO) {
-        Optional<Users> user = repository.findByEmail(userDTO.getEmail());
+        Optional<User> user = repository.findByEmail(userDTO.getEmail());
         if (user.isPresent() && (userDTO.getKey() == null || !user.get().getKey().equals(userDTO.getKey()))) {
             throw new DataIntegrityViolationException("Email já cadastro no sistema.");
         }
     }
 
+
+    @Override
+    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+        var user = repository.findByUsername(username);
+        if (user != null) {
+            return user;
+        } else {
+            throw new UsernameNotFoundException("Username not found.");
+        }
+    }
 }

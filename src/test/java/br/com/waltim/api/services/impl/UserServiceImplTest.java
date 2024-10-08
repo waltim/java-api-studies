@@ -1,6 +1,7 @@
 package br.com.waltim.api.services.impl;
 
-import br.com.waltim.api.domain.Users;
+import br.com.waltim.api.domain.Permission;
+import br.com.waltim.api.domain.User;
 import br.com.waltim.api.domain.dto.UserDTO;
 import br.com.waltim.api.domain.vo.Address;
 import br.com.waltim.api.repositories.UserRepository;
@@ -16,6 +17,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.modelmapper.ModelMapper;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -31,6 +33,15 @@ class UserServiceImplTest {
     public static final String NAME = "UserTest";
     public static final String EMAIL = "teste@teste.com";
     public static final String PASSWORD = "123321";
+
+    public static final String USER_NAME = NAME;
+    public static final String FULL_NAME = "User Tester da Silva";
+    public static final Boolean ACCOUNT_NON_EXPIRED = true;
+    public static final Boolean ACCOUNT_NON_LOCKED = true;
+    public static final Boolean CREDENTIALS_NON_EXPIRED = true;
+    public static final Boolean ENABLED = true;
+
+
     public static final String USUARIO_NAO_ENCONTRADO = "Usuário não encontrado";
     public static final String EMAIL_JA_CADASTRO_NO_SISTEMA = "Email já cadastro no sistema.";
     public static final String STREET = "Main Street";
@@ -48,9 +59,9 @@ class UserServiceImplTest {
     @Mock
     private ModelMapper mapper;
 
-    private Users user;
+    private User user;
     private UserDTO userDTO;
-    private Optional<Users> userOptional;
+    private Optional<User> userOptional;
 
     @BeforeEach
     void setUp() {
@@ -73,12 +84,12 @@ class UserServiceImplTest {
         assertEquals(EMAIL, response.getEmail());
         assertNotSame(PASSWORD, response.getPassword());
 
-        assertEquals(STREET,response.getAddress().getStreet());
-        assertEquals(NUMBER,response.getAddress().getNumber());
-        assertEquals(COMPLEMENT,response.getAddress().getComplement());
-        assertEquals(CITY,response.getAddress().getCity());
-        assertEquals(STATE,response.getAddress().getState());
-        assertEquals(COUNTRY,response.getAddress().getCountry());
+        assertEquals(STREET, response.getAddress().getStreet());
+        assertEquals(NUMBER, response.getAddress().getNumber());
+        assertEquals(COMPLEMENT, response.getAddress().getComplement());
+        assertEquals(CITY, response.getAddress().getCity());
+        assertEquals(STATE, response.getAddress().getState());
+        assertEquals(COUNTRY, response.getAddress().getCountry());
 
     }
 
@@ -96,7 +107,7 @@ class UserServiceImplTest {
 
     @Test
     void shouldReturnListOfUsersWhenFindAll() {
-        List<Users> users = List.of(user); // Cria uma lista com a entidade
+        List<User> users = List.of(user); // Cria uma lista com a entidade
         when(repository.findAll()).thenReturn(users); // Mock do repositório para retornar a lista de entidades
         when(mapper.map(user, UserDTO.class)).thenReturn(userDTO); // Mock do mapper para converter entidade em DTO
 
@@ -111,18 +122,18 @@ class UserServiceImplTest {
         assertEquals(EMAIL, response.getFirst().getEmail());
         assertNotSame(PASSWORD, response.getFirst().getPassword());
 
-        assertEquals(STREET,response.getFirst().getAddress().getStreet());
-        assertEquals(NUMBER,response.getFirst().getAddress().getNumber());
-        assertEquals(COMPLEMENT,response.getFirst().getAddress().getComplement());
-        assertEquals(CITY,response.getFirst().getAddress().getCity());
-        assertEquals(STATE,response.getFirst().getAddress().getState());
-        assertEquals(COUNTRY,response.getFirst().getAddress().getCountry());
+        assertEquals(STREET, response.getFirst().getAddress().getStreet());
+        assertEquals(NUMBER, response.getFirst().getAddress().getNumber());
+        assertEquals(COMPLEMENT, response.getFirst().getAddress().getComplement());
+        assertEquals(CITY, response.getFirst().getAddress().getCity());
+        assertEquals(STATE, response.getFirst().getAddress().getState());
+        assertEquals(COUNTRY, response.getFirst().getAddress().getCountry());
 
     }
 
     @Test
     void shouldReturnSuccessWhenCreatingUser() {
-        when(mapper.map(userDTO, Users.class)).thenReturn(user); // Mock do mapeamento de DTO para Users
+        when(mapper.map(userDTO, User.class)).thenReturn(user); // Mock do mapeamento de DTO para Users
         when(repository.save(any())).thenReturn(user); // Mock do repositório para salvar o usuário
         when(mapper.map(user, UserDTO.class)).thenReturn(userDTO); // Mock do mapeamento de Users para DTO
 
@@ -193,9 +204,26 @@ class UserServiceImplTest {
     }
 
     private void startUser() {
+
+        // Creating a list of permissions for the user
+        Permission readPermission = new Permission();
+        readPermission.setDescription("READ_PRIVILEGE");
+
+        Permission writePermission = new Permission();
+        writePermission.setDescription("WRITE_PRIVILEGE");
+
+        Permission adminPermission = new Permission();
+        adminPermission.setDescription("ADMIN_PRIVILEGE");
+
+        List<Permission> userPermissions = new ArrayList<>();
+        userPermissions.add(readPermission);
+        userPermissions.add(writePermission);
+        userPermissions.add(adminPermission);
+
         Address address = new Address(STREET, NUMBER, COMPLEMENT, CITY, STATE, COUNTRY);
-        user = new Users(ID, NAME, EMAIL, address, PASSWORD);
-        userDTO = new UserDTO(ID, NAME, EMAIL, address, PASSWORD);
-        userOptional = Optional.of(new Users(ID, NAME, EMAIL, address, PASSWORD));
+        user = new User(ID, USER_NAME, FULL_NAME, EMAIL, ACCOUNT_NON_EXPIRED, ACCOUNT_NON_LOCKED, CREDENTIALS_NON_EXPIRED, ENABLED, NAME, address, PASSWORD, userPermissions);
+//        password está null para simular o retorno via JSON com password nulo.
+        userDTO = new UserDTO(ID, USER_NAME, FULL_NAME, EMAIL, ACCOUNT_NON_EXPIRED, ACCOUNT_NON_LOCKED, CREDENTIALS_NON_EXPIRED, ENABLED, NAME, address, null, userPermissions);
+        userOptional = Optional.of(new User(ID, USER_NAME, FULL_NAME, EMAIL, ACCOUNT_NON_EXPIRED, ACCOUNT_NON_LOCKED, CREDENTIALS_NON_EXPIRED, ENABLED, NAME, address, PASSWORD, userPermissions));
     }
 }
