@@ -5,12 +5,12 @@ import br.com.waltim.api.domain.vo.TokenVO;
 import br.com.waltim.api.repositories.UserRepository;
 import br.com.waltim.api.security.jwt.JwtTokenProvider;
 import br.com.waltim.api.services.AuthService;
+import br.com.waltim.api.services.exceptions.BadCredentialsException;
+import br.com.waltim.api.services.exceptions.UsernameNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 @Service
