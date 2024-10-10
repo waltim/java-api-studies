@@ -197,6 +197,7 @@ public class UserResourceJsonTest extends AbstractIntegrationTest {
 
     private void mockUser() {
 
+        user.setKey(1L);
         user.setName("Waltim");
         user.setEmail("<EMAIL>");
         user.setPassword("<PASSWORD>");
