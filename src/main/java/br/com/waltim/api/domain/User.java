@@ -19,7 +19,7 @@ import java.util.Objects;
 public class User extends RepresentationModel<User> implements UserDetails, Serializable {
 
     @Serial
-    private static final long serialVersionUID = 3L;
+    private static final long serialVersionUID = 4L;
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
