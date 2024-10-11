@@ -1,10 +1,11 @@
 package br.com.waltim.api.integrationtests.controller.withjson;
 
 import br.com.waltim.api.config.TestConfigs;
-import br.com.waltim.api.domain.Permission;
 import br.com.waltim.api.domain.dto.UserDTO;
 import br.com.waltim.api.domain.vo.Address;
 import br.com.waltim.api.integrationtests.testcontainers.AbstractIntegrationTest;
+import br.com.waltim.api.integrationtests.vo.AccountCredentialsVO;
+import br.com.waltim.api.integrationtests.vo.TokenVO;
 import io.restassured.builder.RequestSpecBuilder;
 import io.restassured.filter.log.LogDetail;
 import io.restassured.filter.log.RequestLoggingFilter;
@@ -17,7 +18,6 @@ import org.testcontainers.shaded.com.fasterxml.jackson.databind.DeserializationF
 import org.testcontainers.shaded.com.fasterxml.jackson.databind.ObjectMapper;
 
 import java.io.IOException;
-import java.util.List;
 
 import static io.restassured.RestAssured.given;
 import static org.junit.jupiter.api.Assertions.*;
@@ -41,21 +41,41 @@ public class UserResourceJsonTest extends AbstractIntegrationTest {
     }
 
     @Test
-    @Order(1)
-    public void testCreateUser() throws IOException {
+    @Order(0)
+    public void generateToken() throws IOException {
+        AccountCredentialsVO login = new AccountCredentialsVO("carolzinha@teste.com", "admin234");
 
-        mockUser();
+        var accessToken = given()
+                .basePath("/auth/signin")
+                .port(TestConfigs.SERVER_PORT)
+                .contentType(TestConfigs.CONTENT_TYPE_JSON)
+                .body(login)
+                .when()
+                .post()
+                .then()
+                .statusCode(200)
+                .extract()
+                .body()
+                .as(TokenVO.class)
+                .getAccessToken();
 
         specification = new RequestSpecBuilder()
-                .addHeader(TestConfigs.HEADER_PARAM_ORIGIN, TestConfigs.ORIGIN_FRONTEND)
+                .addHeader(TestConfigs.HEADER_PARAM_AUTHORIZATION, "Bearer " + accessToken)
                 .setBasePath("/v1/users")
                 .setPort(TestConfigs.SERVER_PORT)
                 .addFilter(new RequestLoggingFilter(LogDetail.ALL))
                 .addFilter(new ResponseLoggingFilter(LogDetail.ALL))
                 .build();
+    }
+
+    @Test
+    @Order(1)
+    public void testCreateUser() throws IOException {
+        mockUser();
 
         var content = given().spec(specification)
                 .contentType(TestConfigs.CONTENT_TYPE_JSON)
+                .header(TestConfigs.HEADER_PARAM_ORIGIN, TestConfigs.ORIGIN_FRONTEND)
                 .body(user)
                 .when()
                 .post()
@@ -88,23 +108,14 @@ public class UserResourceJsonTest extends AbstractIntegrationTest {
         assertEquals("USA", createdUser.getAddress().getCountry());
     }
 
-
     @Test
     @Order(2)
     public void testCreateUserWithInvalidOrigin() {
-
         mockUser();
-
-        specification = new RequestSpecBuilder()
-                .addHeader(TestConfigs.HEADER_PARAM_ORIGIN, TestConfigs.ORIGIN_INVALID)
-                .setBasePath("/v1/users")
-                .setPort(TestConfigs.SERVER_PORT)
-                .addFilter(new RequestLoggingFilter(LogDetail.ALL))
-                .addFilter(new ResponseLoggingFilter(LogDetail.ALL))
-                .build();
 
         var content = given().spec(specification)
                 .contentType(TestConfigs.CONTENT_TYPE_JSON)
+                .header(TestConfigs.HEADER_PARAM_ORIGIN, TestConfigs.ORIGIN_INVALID)
                 .body(user)
                 .when()
                 .post()
@@ -121,19 +132,11 @@ public class UserResourceJsonTest extends AbstractIntegrationTest {
     @Test
     @Order(3)
     public void testFindById() throws IOException {
-
         mockUser();
-
-        specification = new RequestSpecBuilder()
-                .addHeader(TestConfigs.HEADER_PARAM_ORIGIN, TestConfigs.ORIGIN_LOCAL)
-                .setBasePath("/v1/users")
-                .setPort(TestConfigs.SERVER_PORT)
-                .addFilter(new RequestLoggingFilter(LogDetail.ALL))
-                .addFilter(new ResponseLoggingFilter(LogDetail.ALL))
-                .build();
 
         var content = given().spec(specification)
                 .contentType(TestConfigs.CONTENT_TYPE_JSON)
+                .header(TestConfigs.HEADER_PARAM_ORIGIN, TestConfigs.ORIGIN_LOCAL)
                 .pathParam("id", user.getKey())
                 .when()
                 .get("{id}")
@@ -169,19 +172,11 @@ public class UserResourceJsonTest extends AbstractIntegrationTest {
     @Test
     @Order(4)
     public void testFindByIdWithInvalidOrigin() {
-
         mockUser();
-
-        specification = new RequestSpecBuilder()
-                .addHeader(TestConfigs.HEADER_PARAM_ORIGIN, TestConfigs.ORIGIN_INVALID)
-                .setBasePath("/v1/users")
-                .setPort(TestConfigs.SERVER_PORT)
-                .addFilter(new RequestLoggingFilter(LogDetail.ALL))
-                .addFilter(new ResponseLoggingFilter(LogDetail.ALL))
-                .build();
 
         var content = given().spec(specification)
                 .contentType(TestConfigs.CONTENT_TYPE_JSON)
+                .header(TestConfigs.HEADER_PARAM_ORIGIN, TestConfigs.ORIGIN_INVALID)
                 .pathParam("id", user.getKey())
                 .when()
                 .get("{id}")
@@ -203,15 +198,12 @@ public class UserResourceJsonTest extends AbstractIntegrationTest {
         user.setPassword("<PASSWORD>");
         user.setAddress(new Address("Main Street", "123", "Apt 4B", "Springfield", "IL", "USA"));
 
-        Permission permission = new Permission();
-        permission.setDescription("ADMIN");
-
-        user.setUserName("walli");
+        user.setUserName("carolzinha@teste.com");
         user.setAccountNonExpired(true);
         user.setAccountNonLocked(true);
         user.setCredentialsNonExpired(true);
         user.setEnabled(true);
         user.setFullName("Waltim");
-        user.setPermissions(List.of(permission));
+        user.setPermissions(null);
     }
 }

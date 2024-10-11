@@ -18,7 +18,7 @@ ALTER TABLE users
 UPDATE users
 SET user_name = email,  -- Usando o campo `email` como `user_name`
     full_name = name,   -- Usando o campo `name` como `full_name`
-    password = "19bbf735b27066f2f145e602624e1b24a3fbc54cd5dfd3143fc5feea6bdee9e139ca7332d4806b9f",
+    password = "2d0fc149d37b3b18cc9c6279f9d80ec2b6d96e6d9f24eeb359f5ebc1f92fad56327452b5a5ceed47f3aea20c957031cf",
     account_non_expired = 1,
     account_non_locked = 1,
     credentials_non_expired = 1,
