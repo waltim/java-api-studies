@@ -42,7 +42,7 @@ public class UserResourceJsonTest extends AbstractIntegrationTest {
 
     @Test
     @Order(0)
-    public void generateToken() throws IOException {
+    void generateToken() {
         AccountCredentialsVO login = new AccountCredentialsVO("carolzinha@teste.com", "admin234");
 
         var accessToken = given()
@@ -70,7 +70,7 @@ public class UserResourceJsonTest extends AbstractIntegrationTest {
 
     @Test
     @Order(1)
-    public void testCreateUser() throws IOException {
+    void testCreateUser() throws IOException {
         mockUser();
 
         var content = given().spec(specification)
@@ -93,13 +93,11 @@ public class UserResourceJsonTest extends AbstractIntegrationTest {
         assertNotNull(createdUser.getName());
         assertNotNull(createdUser.getEmail());
         assertNotNull(createdUser.getAddress());
-//        assertNotNull(createdUser.getPassword());
 
         assertTrue(createdUser.getKey() > 0);
 
         assertEquals("Waltim", createdUser.getName());
         assertEquals("<EMAIL>", createdUser.getEmail());
-//        assertTrue(createdUser.getPassword().equals("<PASSWORD>"));
         assertEquals("Main Street", createdUser.getAddress().getStreet());
         assertEquals("123", createdUser.getAddress().getNumber());
         assertEquals("Apt 4B", createdUser.getAddress().getComplement());
@@ -110,7 +108,7 @@ public class UserResourceJsonTest extends AbstractIntegrationTest {
 
     @Test
     @Order(2)
-    public void testCreateUserWithInvalidOrigin() {
+    void testCreateUserWithInvalidOrigin() {
         mockUser();
 
         var content = given().spec(specification)
@@ -131,7 +129,7 @@ public class UserResourceJsonTest extends AbstractIntegrationTest {
 
     @Test
     @Order(3)
-    public void testFindById() throws IOException {
+    void testFindById() throws IOException {
         mockUser();
 
         var content = given().spec(specification)
@@ -154,13 +152,11 @@ public class UserResourceJsonTest extends AbstractIntegrationTest {
         assertNotNull(persistedUser.getName());
         assertNotNull(persistedUser.getEmail());
         assertNotNull(persistedUser.getAddress());
-//        assertNotNull(createdUser.getPassword());
 
         assertTrue(persistedUser.getKey() > 0);
 
         assertEquals("Waltim", persistedUser.getName());
         assertEquals("<EMAIL>", persistedUser.getEmail());
-//        assertTrue(createdUser.getPassword().equals("<PASSWORD>"));
         assertEquals("Main Street", persistedUser.getAddress().getStreet());
         assertEquals("123", persistedUser.getAddress().getNumber());
         assertEquals("Apt 4B", persistedUser.getAddress().getComplement());
@@ -171,7 +167,7 @@ public class UserResourceJsonTest extends AbstractIntegrationTest {
 
     @Test
     @Order(4)
-    public void testFindByIdWithInvalidOrigin() {
+    void testFindByIdWithInvalidOrigin() {
         mockUser();
 
         var content = given().spec(specification)
